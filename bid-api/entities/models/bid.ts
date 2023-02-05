@@ -2,7 +2,6 @@ import Item from "./item";
 import User from "./user";
 
 class Bid {
-  id: string;
   amount: number;
   user: User;
   item: Item;
@@ -10,8 +9,7 @@ class Bid {
   created_at: Date;
   updated_at: Date;
 
-  constructor(id: string, amount: number, user: User, item: Item, date: Date, created_at: Date, updated_at: Date) {
-    this.id = id;
+  constructor(amount: number, user: User, item: Item, date: Date, created_at: Date, updated_at: Date) {
     this.amount = amount;
     this.user = user;
     this.item = item;

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ItemFormValues } from "../../../common/types";
 import { validateForm } from "../../../common/validation";
 import Alert from "../../../components/alert";
@@ -8,17 +9,22 @@ import { useCreateItemMutation } from "../../../redux/queries";
 
 const ItemCreate = () => {
     const [createItem, { isError, isSuccess }] = useCreateItemMutation();
-
     const [isValid, setIsValid] = useState<null | boolean>(null);
+    const navigate = useNavigate()
 
     const onSubmit = (inputs: ItemFormValues) => {
-        inputs.image = "zeaze"
+        setIsValid(null)
         if (!validateForm(inputs)) {
             setIsValid(false);
             return;
         }
-
-        createItem(inputs);
+        createItem(inputs).then(({ data }: any) => {
+            if(data.success) {
+                setTimeout(() => {
+                    navigate('/admin')
+                }, 4000)
+            }
+        });
     };
 
     return (
@@ -42,7 +48,7 @@ const ItemCreate = () => {
                         message="Item created successfully"
                     ></Alert>
                 )}
-                <ItemForm onSubmit={onSubmit}></ItemForm>
+                <ItemForm onSubmit={onSubmit} leave='/admin'></ItemForm>
             </div>
         </AdminLayout>
     );

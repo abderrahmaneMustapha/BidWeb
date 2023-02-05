@@ -5,11 +5,16 @@ interface ItemFormValues {
   description: string
 }
 interface ItemFormProps {
-    onSubmit: (event: ItemFormValues) => void
+    onSubmit: (event: ItemFormValues) => void,
+    leave: string
 }
 interface AlertProps {
   type: string,
   message: string,
 }
+interface FormMessageProps {
+  type: string,
+  message: string
+}
 
-export type { ItemFormProps, ItemFormValues, AlertProps }
+export type { ItemFormProps, ItemFormValues, AlertProps, FormMessageProps }

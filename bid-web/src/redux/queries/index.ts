@@ -9,9 +9,20 @@ export const bidApi = createApi({
       query(data) {
         const { item, ...body} = data
         return {
-          url: `/item`,
+          url: '/item',
           method: 'POST',
           body,
+        }
+      }
+    }),
+    createImage: builder.mutation({
+      query(data) {
+        return {
+          url: '/image',
+          method: 'POST',
+          body:{
+            image: data
+          },
         }
       }
     })
@@ -19,5 +30,6 @@ export const bidApi = createApi({
 })
 
 export const {
-  useCreateItemMutation
+  useCreateItemMutation,
+  useCreateImageMutation
 } = bidApi

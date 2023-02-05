@@ -1,7 +1,6 @@
 import User from "./user";
 
 class Item {
-    id: string;
     name: string;
     description: string;
     image: string;
@@ -11,7 +10,6 @@ class Item {
     updated_at: Date;
 
     constructor(
-        id: string,
         name: string,
         description: string,
         image: string,
@@ -20,7 +18,6 @@ class Item {
         created_at: Date,
         updated_at: Date
     ) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;
@@ -32,7 +29,6 @@ class Item {
 
     static getAttributes() {
         return [
-            "id",
             "name",
             "description",
             "image",

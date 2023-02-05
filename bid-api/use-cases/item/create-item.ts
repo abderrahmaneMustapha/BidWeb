@@ -9,7 +9,6 @@ const makeCreateItem = ({ itemRepository }: createItemArgs) => {
     return async function createItem({ body }: any) {
         let { name, description, close_at, image } = body;
         let user = new User(
-            "1",
             "user",
             "password",
             false,
@@ -17,7 +16,6 @@ const makeCreateItem = ({ itemRepository }: createItemArgs) => {
             new Date()
         );
         const item = {
-            id: "1",
             created_by: user,
             created_at: new Date(),
             updated_at: new Date(),
@@ -27,7 +25,6 @@ const makeCreateItem = ({ itemRepository }: createItemArgs) => {
             image,
         };
         let _item = new Item(
-            item.id,
             item.name,
             item.description,
             item.image,

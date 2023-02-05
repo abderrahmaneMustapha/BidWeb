@@ -11,7 +11,7 @@ const ItemEdit = () => {
                 <header className="mb-md-5 mb-sm-2">
                   <h3>Edit Item</h3>
                 </header>
-                <ItemForm onSubmit={onSubmit}></ItemForm>
+                <ItemForm onSubmit={onSubmit} leave='/admin'></ItemForm>
             </div>
         </AdminLayout>
     );

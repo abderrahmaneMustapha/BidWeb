@@ -7,7 +7,6 @@ class UserRepository implements IUserRepository {
   constructor() {
     this.data = [
       {
-        id: "1",
         username: "user1",
         password: "user2",
         is_admin: false,
@@ -15,7 +14,6 @@ class UserRepository implements IUserRepository {
         updated_at: new Date(),
       },
       {
-        id: "2",
         username: "user2",
         password: "user3",
         is_admin: false,
@@ -23,7 +21,6 @@ class UserRepository implements IUserRepository {
         updated_at: new Date(),
       },
       {
-        id: "3",
         username: "admin1",
         password: "admin2",
         is_admin: true,
@@ -37,7 +34,7 @@ class UserRepository implements IUserRepository {
     throw new Error("Method not implemented.");
   }
   async get(id: string): Promise<User> {
-    return this.data.filter(user => user.id === id)[0];
+    return this.data.filter(user => user.username === id)[0];
   }
   create(entity: User): Promise<boolean> {
     throw new Error("Method not implemented.");

@@ -16,3 +16,7 @@ code {
 #root {
   min-height: 100vh;
 }
+
+div.valid-feedback { 
+  display: block;
+}
