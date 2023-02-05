@@ -4,7 +4,7 @@ import IItemRepository from "../commun/itemRepository";
 
 class ItemRepository implements IItemRepository {
     public _collection: Collection | null = null;
-    public readonly _collectionName: string = "bid";
+    public readonly _collectionName: string = "items";
     constructor(db: Promise<Db>) {
         db.then((db) => {
             this._collection = db.collection(this._collectionName);

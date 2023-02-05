@@ -24,7 +24,7 @@ const makeCreateItem = ({ itemRepository }: createItemArgs) => {
             name,
             description,
             close_at: new Date(close_at),
-            image: "zaeaze fdfsdfsdfsdfsdfsdfsdfsdfsd",
+            image,
         };
         let _item = new Item(
             item.id,

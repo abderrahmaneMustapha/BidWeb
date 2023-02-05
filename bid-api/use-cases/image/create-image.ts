@@ -9,7 +9,6 @@ const makeCreateImage = ({cdn}: makeCreateImageArgs) => {
     await cdn.uploader.upload(body.image).then((res: any) => {
       image = { public_id: res.public_id, secure_url: res.secure_url}
     });
-
     return image
   }
 }
