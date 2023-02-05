@@ -29,7 +29,7 @@ const ItemsTable = () => {
                             ></button>
                             <ul className="dropdown-menu">
                                 <li>
-                                    <NavLink className="dropdown-item" to={`${id}`}>
+                                    <NavLink className="dropdown-item" to={`/admin/item/${id}`}>
                                         Edit
                                     </NavLink>
                                 </li>
