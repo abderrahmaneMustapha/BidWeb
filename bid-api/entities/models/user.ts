@@ -2,10 +2,10 @@ class User {
   username: string;
   password: string;
   is_admin: boolean;
-  created_at: Date;
-  updated_at: Date;
+  created_at: number;
+  updated_at: number;
 
-  constructor(username: string, password: string, is_admin: boolean, created_at: Date, updated_at: Date) {
+  constructor(username: string, password: string, is_admin: boolean, created_at: number, updated_at: number) {
     this.username = username;
     this.password = password;
     this.is_admin = is_admin;

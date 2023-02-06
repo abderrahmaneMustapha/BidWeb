@@ -4,19 +4,19 @@ class Item {
     name: string;
     description: string;
     image: string;
-    close_at: Date;
+    close_at: number;
     created_by: User;
-    created_at: Date;
-    updated_at: Date;
+    created_at: number;
+    updated_at: number;
 
     constructor(
         name: string,
         description: string,
         image: string,
-        close_at: Date,
+        close_at: number,
         created_by: User,
-        created_at: Date,
-        updated_at: Date
+        created_at: number,
+        updated_at: number
     ) {
         this.name = name;
         this.description = description;
@@ -68,7 +68,7 @@ class Item {
 
     static getCloseAtValidation() {
         return {
-            bsonType: "date",
+            bsonType: "double",
             description: "'closed_at' must be a date and is required",
         };
     }
@@ -82,14 +82,14 @@ class Item {
 
     static getCreatedAtValidation() {
         return {
-            bsonType: "date",
+            bsonType: "double",
             description: "'created_at' must be a date and is required",
         };
     }
 
     static getUpdatedAtValidation() {
         return {
-            bsonType: "date",
+            bsonType: "double",
             description: "'updated_at' must be a date and is required",
         };
     }

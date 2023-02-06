@@ -1,8 +1,8 @@
 interface IBaseRepository<T> {
-  list(): Promise<T[]>;
+  list(limit: number, skip: number): Promise<T[]>;
   get(id: string): Promise<T>;
   create(entity: T): Promise<boolean>;
-  delete(entity: T): Promise<boolean>;
+  delete(id: string): Promise<boolean>;
   update(entity: T): Promise<boolean>;
 }
 

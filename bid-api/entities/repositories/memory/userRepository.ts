@@ -10,22 +10,22 @@ class UserRepository implements IUserRepository {
         username: "user1",
         password: "user2",
         is_admin: false,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: Date.now(),
+        updated_at: Date.now(),
       },
       {
         username: "user2",
         password: "user3",
         is_admin: false,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: Date.now(),
+        updated_at: Date.now(),
       },
       {
         username: "admin1",
         password: "admin2",
         is_admin: true,
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: Date.now(),
+        updated_at: Date.now(),
       },
     ]
   }
@@ -39,7 +39,7 @@ class UserRepository implements IUserRepository {
   create(entity: User): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  delete(entity: User): Promise<boolean> {
+  delete(id: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
   update(entity: User): Promise<boolean> {

@@ -17,7 +17,7 @@ class BidRepository implements IBidRepository {
   create(entity: Bid): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  delete(entity: Bid): Promise<boolean> {
+  delete(id: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
   update(entity: Bid): Promise<boolean> {

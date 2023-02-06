@@ -5,11 +5,11 @@ class Bid {
   amount: number;
   user: User;
   item: Item;
-  date: Date;
-  created_at: Date;
-  updated_at: Date;
+  date: number;
+  created_at: number;
+  updated_at: number;
 
-  constructor(amount: number, user: User, item: Item, date: Date, created_at: Date, updated_at: Date) {
+  constructor(amount: number, user: User, item: Item, date: number, created_at: number, updated_at: number) {
     this.amount = amount;
     this.user = user;
     this.item = item;

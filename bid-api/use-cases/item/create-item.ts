@@ -12,29 +12,18 @@ const makeCreateItem = ({ itemRepository }: createItemArgs) => {
             "user",
             "password",
             false,
-            new Date(),
-            new Date()
+            Date.now(),
+            Date.now()
         );
-        const item = {
-            created_by: user,
-            created_at: new Date(),
-            updated_at: new Date(),
-            name,
-            description,
-            close_at: new Date(close_at),
-            image,
-        };
-        let _item = new Item(
-            item.name,
-            item.description,
-            item.image,
-            item.close_at,
-            item.created_by,
-            item.created_at,
-            item.updated_at
+        let _item = new Item(name, description, image,
+                             new Date(close_at).getTime(),
+                             user, Date.now(), Date.now()
         );
-
-        itemRepository.create(_item);
+        const res = await itemRepository.create(_item)
+        if (!res) {
+            throw new Error("Could not create item")
+        } 
+        return res
     };
 };
 

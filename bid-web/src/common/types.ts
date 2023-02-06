@@ -19,7 +19,7 @@ interface User {
 interface ItemFormProps {
     onSubmit: (event: ItemFormValues) => void;
     leave: string;
-    item: Item;
+    item?: Item;
 }
 interface AlertProps {
     type: string;
