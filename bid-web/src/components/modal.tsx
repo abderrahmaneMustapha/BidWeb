@@ -1,7 +1,19 @@
-const Modal = ({ hide }: { hide: boolean }) => {
-    if (hide) return <></>
+const Modal = ({
+    hide,
+    content,
+    submitText = "Submit",
+    onSubmit,
+    onClose,
+}: {
+    hide: boolean;
+    content: JSX.Element | JSX.Element[] | string;
+    submitText?: string;
+    onSubmit?: () => void;
+    onClose?: () => void;
+}) => {
+    if (hide) return <></>;
     return (
-        <div className="modal fade">
+        <div className="modal">
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -15,17 +27,22 @@ const Modal = ({ hide }: { hide: boolean }) => {
                             aria-label="Close"
                         ></button>
                     </div>
-                    <div className="modal-body">...</div>
+                    <div className="modal-body">{content}</div>
                     <div className="modal-footer">
                         <button
                             type="button"
                             className="btn btn-secondary"
                             data-bs-dismiss="modal"
+                            onClick={onClose}
                         >
                             Close
                         </button>
-                        <button type="button" className="btn btn-primary">
-                            Save changes
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={onSubmit}
+                        >
+                            {submitText}
                         </button>
                     </div>
                 </div>
@@ -34,4 +51,4 @@ const Modal = ({ hide }: { hide: boolean }) => {
     );
 };
 
-export default Modal
+export default Modal;

@@ -2,7 +2,7 @@ const SideBar = () => {
     return (
         <nav className="navbar bg-light">
             <div className="container-fluid">
-                <a className="navbar-brand" href="/">
+                <a className="navbar-brand" href="/admin">
                    Admin Dashboard
                 </a>
                 <button
@@ -24,7 +24,7 @@ const SideBar = () => {
                             className="offcanvas-title"
                             id="offcanvasNavbarLabel"
                         >
-                            Offcanvas
+                            Admin Navbar
                         </h5>
                         <button
                             type="button"

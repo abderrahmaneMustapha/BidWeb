@@ -58,7 +58,7 @@ const NavBar = () => {
                     </div>
                 </div>
             </nav>
-            <Modal hide={hideModal} />
+            <Modal hide={hideModal} content={'azeaze'} />
         </>
     );
 };

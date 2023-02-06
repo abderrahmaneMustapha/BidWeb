@@ -4,7 +4,7 @@ import { ItemFormProps, ItemFormValues } from "../common/types";
 import { useCreateImageMutation } from "../redux/queries";
 import FormMessage from "./formMessage";
 
-const ItemForm = ({ onSubmit, leave }: ItemFormProps) => {
+const ItemForm = ({ onSubmit, leave, item }: ItemFormProps) => {
     const navigate = useNavigate()
     const [createImage,{ isError, isSuccess }] =
         useCreateImageMutation();

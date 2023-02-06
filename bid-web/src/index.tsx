@@ -25,7 +25,7 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
-    path: '/bid/:id/:name',
+    path: '/bid/:name',
     element: <Item />,
   },
   {
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
     element: <Admin />,
   },
   {
-    path: '/admin/item/:id',
+    path: '/admin/item/:name',
     element: <ItemEdit />
   },
   {

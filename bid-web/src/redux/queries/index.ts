@@ -5,6 +5,14 @@ export const bidApi = createApi({
   reducerPath: 'bidApi',
   baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL}),
   endpoints: (builder) => ({
+    getItems: builder.mutation({
+      query(data) {
+        return {
+          url: `/item?limit=${data.limit}&skip=${data.skip}`,
+          method: 'GET',
+        }
+      }
+    }),
     createItem: builder.mutation({
       query(data) {
         const { item, ...body} = data
@@ -12,6 +20,14 @@ export const bidApi = createApi({
           url: '/item',
           method: 'POST',
           body,
+        }
+      }
+    }),
+    deleteItem: builder.mutation({
+      query(data) {
+        return {
+          url: `/item/${data.name}`,
+          method: 'DELETE',
         }
       }
     }),
@@ -31,5 +47,7 @@ export const bidApi = createApi({
 
 export const {
   useCreateItemMutation,
-  useCreateImageMutation
+  useGetItemsMutation,
+  useDeleteItemMutation,
+  useCreateImageMutation,
 } = bidApi

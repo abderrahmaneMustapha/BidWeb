@@ -17,6 +17,6 @@ code {
   min-height: 100vh;
 }
 
-div.valid-feedback { 
+div.valid-feedback, div.modal { 
   display: block;
 }
