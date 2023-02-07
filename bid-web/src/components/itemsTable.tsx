@@ -2,7 +2,6 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Modal from "./modal";
 
-const id = 33;
 const ItemsTable = ({ data, onDelete }: any) => {
     const [hideModal, setHideModal] = useState(true);
     const [selectedItem, setSelectedItem] = useState("");
@@ -62,11 +61,11 @@ const ItemsTable = ({ data, onDelete }: any) => {
                 hide={hideModal}
                 content={`Are you sure you want to delete this Item ${selectedItem}`}
                 onSubmit={() => {
-                    onDelete(selectedItem)
+                    onDelete(selectedItem);
                 }}
                 onClose={() => {
-                    setHideModal(true)
-                    setSelectedItem('')
+                    setHideModal(true);
+                    setSelectedItem("");
                 }}
             />
         </div>

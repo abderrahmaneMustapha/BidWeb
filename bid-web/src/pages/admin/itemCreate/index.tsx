@@ -10,19 +10,19 @@ import { useCreateItemMutation } from "../../../redux/queries";
 const ItemCreate = () => {
     const [createItem, { isError, isSuccess }] = useCreateItemMutation();
     const [isValid, setIsValid] = useState<null | boolean>(null);
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const onSubmit = (inputs: ItemFormValues) => {
-        setIsValid(null)
+        setIsValid(null);
         if (!validateForm(inputs)) {
             setIsValid(false);
             return;
         }
         createItem(inputs).then(({ data }: any) => {
-            if(data.success) {
+            if (data.success) {
                 setTimeout(() => {
-                    navigate('/admin')
-                }, 4000)
+                    navigate("/admin");
+                }, 4000);
             }
         });
     };
@@ -39,7 +39,7 @@ const ItemCreate = () => {
                 {isError && (
                     <Alert
                         type="danger"
-                        message="Server validation error, item could not created successfully"
+                        message="Server validation error, item could not be created"
                     ></Alert>
                 )}
                 {isSuccess && (
@@ -48,7 +48,7 @@ const ItemCreate = () => {
                         message="Item created successfully"
                     ></Alert>
                 )}
-                <ItemForm onSubmit={onSubmit} leave='/admin'></ItemForm>
+                <ItemForm onSubmit={onSubmit} leave="/admin"></ItemForm>
             </div>
         </AdminLayout>
     );

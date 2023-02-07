@@ -13,6 +13,14 @@ export const bidApi = createApi({
         }
       }
     }),
+    getItem: builder.mutation({
+      query(data) {
+        return {
+          url: `/item/${data.name}`,
+          method: 'GET',
+        }
+      }
+    }),
     createItem: builder.mutation({
       query(data) {
         const { item, ...body} = data
@@ -28,6 +36,15 @@ export const bidApi = createApi({
         return {
           url: `/item/${data.name}`,
           method: 'DELETE',
+        }
+      }
+    }),
+    updateItem: builder.mutation({
+      query(data) {
+        return {
+          url: `/item/${data.name}`,
+          method: 'PATCH',
+          body: data.item,
         }
       }
     }),
@@ -48,6 +65,8 @@ export const bidApi = createApi({
 export const {
   useCreateItemMutation,
   useGetItemsMutation,
+  useGetItemMutation,
   useDeleteItemMutation,
+  useUpdateItemMutation,
   useCreateImageMutation,
 } = bidApi

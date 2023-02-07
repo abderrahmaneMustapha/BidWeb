@@ -3,26 +3,28 @@ import { useNavigate } from "react-router-dom";
 import { PAGINATION_ITEMS } from "../../common/confing";
 import ItemsTable from "../../components/itemsTable";
 import AdminLayout from "../../layouts/admin";
-import { useDeleteItemMutation, useGetItemsMutation } from "../../redux/queries";
+import {
+    useDeleteItemMutation,
+    useGetItemsMutation,
+} from "../../redux/queries";
 
 const pageSize = parseInt(PAGINATION_ITEMS || "10");
 
 const Admin = () => {
     const navigate = useNavigate();
     const [getItems, { isError, data }] = useGetItemsMutation();
-    const [deleteItem, { data:deleteData }] = useDeleteItemMutation()
+    const [deleteItem, { data: deleteData }] = useDeleteItemMutation();
     const [currentItems, setCurrentItems] = useState<number>(0);
 
     useEffect(() => {
         getItems({ limit: pageSize, skip: currentItems });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentItems, deleteData]);
 
-
     const handleDeleteItem = (name: string) => {
-        console.log(name)
-        deleteItem({name: name})
-    }
+        console.log(name);
+        deleteItem({ name: name });
+    };
 
     const goNext = () => {
         if (!data || isError) return;
@@ -79,7 +81,10 @@ const Admin = () => {
                         </button>
                     </div>
                 </section>
-                <ItemsTable data={data?.data.data || []} onDelete={handleDeleteItem}></ItemsTable>
+                <ItemsTable
+                    data={data?.data.data || []}
+                    onDelete={handleDeleteItem}
+                ></ItemsTable>
             </div>
         </AdminLayout>
     );
