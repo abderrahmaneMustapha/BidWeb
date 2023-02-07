@@ -32,7 +32,7 @@ const ItemEdit = () => {
             if (data.success) {
                 setTimeout(() => {
                     navigate("/admin");
-                }, 4000);
+                }, 2000);
             }
         });
     };

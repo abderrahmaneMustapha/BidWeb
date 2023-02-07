@@ -16,6 +16,10 @@ interface User {
     password: string;
     is_admin: boolean;
 }
+interface CardProps {
+    to: string;
+    item: Item;
+}
 interface ItemFormProps {
     onSubmit: (event: ItemFormValues) => void;
     leave: string;
@@ -51,4 +55,7 @@ export type {
     FormMessageProps,
     usePaginationProps,
     PaginationProps,
+    CardProps,
+    Item,
+    User,
 };

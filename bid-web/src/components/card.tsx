@@ -1,15 +1,17 @@
 import { useNavigate } from "react-router-dom"
+import { CardProps } from "../common/types"
+import { resizeImage } from "../common/utils"
 
-const Card  = () => {
+const Card  = ({to , item}: CardProps ) => {
   const navigate = useNavigate()
   return (
   <div className="card">
-    <img src="https://via.placeholder.com/250.png/09f/fff" className="card-img-top" alt="..." />
+    <img src={resizeImage(item.image)} className="card-img-top" alt={item.name} />
     <div className="card-body">
-      <h5 className="card-title">Card title</h5>
-      <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      <h5 className="card-title">{item.name}</h5>
+      <p className="card-text text-truncate">{item.description}</p>
       <p className="card-text fw-bold"><span className="fw-bolder">Last Bid: </span> 30$</p>
-      <button className="btn btn-primary" onClick={() => navigate(`bid/${1}/${'car'}`)}>Go somewhere</button>
+      <button className="btn btn-primary" onClick={() => navigate(to)}>Details</button>
     </div>
   </div>
   )

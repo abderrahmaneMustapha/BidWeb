@@ -7,7 +7,7 @@ import moment from "moment";
 
 const ItemForm = ({ onSubmit, leave, item }: ItemFormProps) => {
     const navigate = useNavigate();
-    const [createImage, { isError, isSuccess }] = useCreateImageMutation();
+    const [createImage, { isError, isSuccess, isLoading }] = useCreateImageMutation();
     const [inputs, setInputs] = useState<ItemFormValues>({
         name: "",
         close_at: "",
@@ -79,11 +79,11 @@ const ItemForm = ({ onSubmit, leave, item }: ItemFormProps) => {
                     }}
                     accept="image/*"
                 />
-                {inputs.image && (
+                {inputs.image ? (
                     <a href={inputs.image} target={"_blank"} rel="noreferrer">
                         uploaded image url
                     </a>
-                )}
+                ) :  ( (isLoading && !isError ) && (<strong>Please wait image is being uploaded</strong>))}
                 {isError && (
                     <FormMessage
                         type="invalid"

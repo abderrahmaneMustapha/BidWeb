@@ -1,4 +1,7 @@
-import { useEffect, useState } from "react";
+import {
+    useEffect,
+    useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import { PAGINATION_ITEMS } from "../../common/confing";
 import ItemsTable from "../../components/itemsTable";
@@ -15,14 +18,22 @@ const Admin = () => {
     const [getItems, { isError, data }] = useGetItemsMutation();
     const [deleteItem, { data: deleteData }] = useDeleteItemMutation();
     const [currentItems, setCurrentItems] = useState<number>(0);
+    const [search, setSearch] = useState<string>("");
+    const [sort, setSort] = useState<number>(-1)
+    const [open, setOpen] = useState<number>(0)
 
     useEffect(() => {
-        getItems({ limit: pageSize, skip: currentItems });
+        getItems({
+            limit: pageSize,
+            skip: currentItems,
+            search,
+            sort,
+            open,
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentItems, deleteData]);
 
     const handleDeleteItem = (name: string) => {
-        console.log(name);
         deleteItem({ name: name });
     };
 
@@ -59,8 +70,8 @@ const Admin = () => {
                         Add
                     </button>
                 </header>
-                <section className="my-2 d-flex justify-content-between">
-                    <div>
+                <section className="my-2 d-flex flex-wrap justify-content-center align-items-end">
+                    <div className="col-md-4 col-sm-12 mb-4">
                         <button
                             className="btn btn-success btn-sm"
                             onClick={goPrev}
@@ -79,6 +90,70 @@ const Admin = () => {
                         >
                             Next
                         </button>
+                    </div>
+                    <div className="col-md-2 col-sm-12 mb-4 px-4">
+                        <select
+                            className="form-select"
+                            onChange={(event) => {
+                                setSort(parseInt(event.target.value))
+                                getItems({
+                                    limit: pageSize,
+                                    skip: currentItems,
+                                    search,
+                                    sort: event.target.value,
+                                    open,
+                                })
+                            }}
+                        >
+                            <option value="-1" selected>Newest</option>
+                            <option value="1">Oldest</option>
+                        </select>
+                    </div>
+                    <div className="col-md-2 col-sm-12 mb-4 px-4">
+                        <select
+                            className="form-select"
+                            onChange={(event) => {
+                                setOpen(parseInt(event.target.value))
+                                getItems({
+                                    limit: pageSize,
+                                    skip: currentItems,
+                                    search,
+                                    sort,
+                                    open: event.target.value,
+                                })
+                            }}
+                        >
+                            <option value="0" selected>Closed/Open bids</option>
+                            <option value="-1">Closed</option>
+                            <option value="1">Open</option>
+                        </select>
+                    </div>
+                    <div className="col-md-4 col-sm-12 mb-4">
+                        <div className="input-group">
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder="Item name or description"
+                                onChange={(event) =>
+                                    setSearch(event.target.value)
+                                }
+                            />
+                            <button
+                                className="btn btn-outline-secondary"
+                                type="button"
+                                onClick={() =>
+                                    getItems({
+                                        limit: pageSize,
+                                        skip: currentItems,
+                                        search,
+                                        sort,
+                                        open,
+                                    })
+                                }
+                            >
+                                Search
+                            </button>
+                        </div>
                     </div>
                 </section>
                 <ItemsTable
