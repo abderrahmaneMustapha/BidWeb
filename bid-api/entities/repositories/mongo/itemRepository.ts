@@ -14,14 +14,40 @@ class ItemRepository implements IItemRepository {
         });
     }
 
-    async count(): Promise<number> {
-        const result = await this._collection?.find().count();
+    async count(search: string, open: 1 | -1 | 0): Promise<number> {
+        let openFilter = this.openBidItemFilter(open);
+        const result = await this._collection
+            ?.find({
+                $or: [
+                    { description: { $regex: search } },
+                    { name: { $regex: search } },
+                ],
+                ...openFilter,
+            })
+            .count();
         if (result) return result;
         return 0;
     }
-    async list(limit: number, skip: number): Promise<Item[]> {
+    async list(
+        limit: number,
+        skip: number,
+        search: string,
+        sort: 1 | -1,
+        open: 1 | -1 | 0
+    ): Promise<Item[]> {
+        let openFilter = this.openBidItemFilter(open);
         const result = await this._collection
-            ?.find({}, { limit: limit, skip: skip })
+            ?.find(
+                {
+                    $or: [
+                        { description: { $regex: search } },
+                        { name: { $regex: search } },
+                    ],
+                    ...openFilter,
+                },
+                { limit: limit, skip: skip }
+            )
+            .sort({ created_by: sort })
             .toArray();
         return result as unknown as Item[];
     }
@@ -48,7 +74,6 @@ class ItemRepository implements IItemRepository {
         return false;
     }
     async update(id: string, entity: Item): Promise<boolean> {
-        console.log(id);
         try {
             const result = await this._collection?.updateOne(
                 { name: id },
@@ -89,6 +114,25 @@ class ItemRepository implements IItemRepository {
                 },
             },
         });
+    }
+
+    private openBidItemFilter(open: 1 | -1 | 0) {
+        let openFilter = undefined;
+        if (open == 1) {
+            openFilter = {
+                close_at: {
+                    $gt: new Date().getTime(),
+                },
+            };
+        } else if (open == -1) {
+            openFilter = {
+                close_at: {
+                    $lte: new Date().getTime(),
+                },
+            };
+        }
+
+        return openFilter;
     }
 }
 
