@@ -42,7 +42,7 @@ class UserRepository implements IUserRepository {
   delete(id: string): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
-  update(entity: User): Promise<boolean> {
+  update(id: string, entity: User): Promise<boolean> {
     throw new Error("Method not implemented.");
   }
   

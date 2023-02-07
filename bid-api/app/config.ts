@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 8080
 
 const CORS = {
   origin: true,
-  methods: ["POST", "GET", "DELETE"],
+  methods: ["POST", "GET", "DELETE", "PATCH"],
   credentials: true,
   maxAge: 3600
 };

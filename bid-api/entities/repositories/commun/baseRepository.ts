@@ -3,7 +3,7 @@ interface IBaseRepository<T> {
   get(id: string): Promise<T>;
   create(entity: T): Promise<boolean>;
   delete(id: string): Promise<boolean>;
-  update(entity: T): Promise<boolean>;
+  update(id: string, entity: T): Promise<boolean>;
 }
 
 export default IBaseRepository

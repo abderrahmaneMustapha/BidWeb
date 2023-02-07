@@ -10,45 +10,63 @@ class ItemRepository implements IItemRepository {
         db.then((db) => {
             this._collection = db.collection(this._collectionName);
             this.collectionValidation(db);
-            this._collection.createIndex({ "name": 1}, { unique: true})
+            this._collection.createIndex({ name: 1 }, { unique: true });
         });
     }
 
-    async count (): Promise<number> {
-        const result =  await this._collection?.find().count()
-        if (result)
-            return result
-        return 0
-    } 
-    async list(limit: number, skip: number): Promise<Item[]> {
-        console.log(typeof limit)
-        console.log(skip)
-        const result  = await this._collection?.find({}, { limit: limit, skip: skip}).toArray()
-        return result as unknown as Item[]
+    async count(): Promise<number> {
+        const result = await this._collection?.find().count();
+        if (result) return result;
+        return 0;
     }
-    get(id: string): Promise<Item> {
-        throw new Error("Method not implemented.");
+    async list(limit: number, skip: number): Promise<Item[]> {
+        const result = await this._collection
+            ?.find({}, { limit: limit, skip: skip })
+            .toArray();
+        return result as unknown as Item[];
+    }
+    async get(id: string): Promise<Item> {
+        const result = await this._collection?.findOne({ name: id });
+        return result as unknown as Item;
     }
     async create(entity: Item): Promise<boolean> {
         try {
             const result = await this._collection?.insertOne(entity);
             return result?.acknowledged as boolean;
-        } catch(error: unknown) {        
-            handleErrors(error, 'Validation error could not create a new item')
+        } catch (error: unknown) {
+            handleErrors(error, "Validation error could not create a new item");
         }
-        return false  
+        return false;
     }
     async delete(id: string): Promise<boolean> {
         try {
-            const result = await this._collection?.deleteOne({ name: id})
-            return result?.deletedCount === 1
+            const result = await this._collection?.deleteOne({ name: id });
+            return result?.deletedCount === 1;
         } catch (error: unknown) {
-            handleErrors(error, 'Error Item was not deleted')
+            handleErrors(error, "Error Item was not deleted");
         }
-        return false
+        return false;
     }
-    update(entity: Item): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async update(id: string, entity: Item): Promise<boolean> {
+        console.log(id);
+        try {
+            const result = await this._collection?.updateOne(
+                { name: id },
+                {
+                    $set: {
+                        image: entity.image,
+                        description: entity.description,
+                        name: entity.name,
+                        close_at: entity.close_at,
+                    },
+                }
+            );
+
+            return !!result?.modifiedCount;
+        } catch (error: unknown) {
+            handleErrors(error, "Validation error could not update the item");
+        }
+        return false;
     }
 
     private collectionValidation(db: Db) {
