@@ -13,7 +13,7 @@ const makeListItem = ({ itemRepository }: listItemArgs) => {
             search,
             (parseInt(sort) as 1 | -1) || -1,
             (parseInt(open) as 1 | -1 | 0) || 0,
-            (parseInt(bidSort) as 1 | -1) || -1,
+            (parseInt(bidSort) as 1 | -1 | 0) || 0,
         );
         const count = await itemRepository.count(
             search,

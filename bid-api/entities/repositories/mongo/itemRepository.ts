@@ -1,4 +1,4 @@
-import { Collection, Db } from "mongodb";
+import { Collection, Db, Sort } from "mongodb";
 import { Item } from "../../models";
 import IItemRepository from "../commun/itemRepository";
 import handleErrors from "./utils/handleErrors";
@@ -16,14 +16,13 @@ class ItemRepository implements IItemRepository {
 
     async count(search: string, open: 1 | -1 | 0): Promise<number> {
         let openFilter = this.openBidItemFilter(open);
-        const result = await this._collection
-            ?.countDocuments({
-                $or: [
-                    { description: { $regex: search } },
-                    { name: { $regex: search } },
-                ],
-                ...openFilter,
-            })
+        const result = await this._collection?.countDocuments({
+            $or: [
+                { description: { $regex: search } },
+                { name: { $regex: search } },
+            ],
+            ...openFilter,
+        });
         if (result) return result;
         return 0;
     }
@@ -33,10 +32,10 @@ class ItemRepository implements IItemRepository {
         search: string,
         sort: 1 | -1,
         open: 1 | -1 | 0,
-        bidSort: 1 | -1 = -1
+        bidSort: 1 | -1 | 0
     ): Promise<Item[]> {
         let openFilter = this.openBidItemFilter(open);
-        console.log(bidSort)
+        let sortFilter = this.sortBidItemFilter(sort, bidSort);
         const result = await this._collection
             ?.find(
                 {
@@ -48,7 +47,7 @@ class ItemRepository implements IItemRepository {
                 },
                 { limit: limit, skip: skip }
             )
-            .sort({highest_bid: bidSort, created_by: sort})
+            .sort(sortFilter)
             .toArray();
         return result as unknown as Item[];
     }
@@ -147,6 +146,13 @@ class ItemRepository implements IItemRepository {
         }
 
         return openFilter;
+    }
+
+    private sortBidItemFilter(sort: 1 | -1, bidSort: 1 | -1 | 0): Sort {
+        if (!bidSort) {
+            return {created_by: sort }
+        }
+         return { highest_bid: (bidSort as 1 | -1 ), created_by: sort }
     }
 }
 
