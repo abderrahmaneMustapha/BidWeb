@@ -5,7 +5,7 @@ import { useCreateImageMutation } from "../redux/queries";
 import FormMessage from "./formMessage";
 import moment from "moment";
 
-const ItemForm = ({ onSubmit, leave, item }: ItemFormProps) => {
+const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
     const navigate = useNavigate();
     const [createImage, { isError, isSuccess, isLoading }] = useCreateImageMutation();
     const [inputs, setInputs] = useState<ItemFormValues>({
@@ -55,6 +55,7 @@ const ItemForm = ({ onSubmit, leave, item }: ItemFormProps) => {
                     }}
                     defaultValue={inputs.name}
                     required
+                    disabled={action === "edit"}
                 />
             </div>
             <div className="col-md-6">

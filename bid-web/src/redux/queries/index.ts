@@ -8,7 +8,7 @@ export const bidApi = createApi({
         getItems: builder.mutation({
             query(data) {
                 return {
-                    url: `/item?limit=${data.limit}&skip=${data.skip}&search=${data.search}&sort=${data.sort}&open=${data.open}`,
+                    url: `/item?limit=${data.limit}&skip=${data.skip}&search=${data.search}&sort=${data.sort}&open=${data.open}&bidSort=${data.bidSort}`,
                     method: "GET",
                 };
             },
@@ -48,6 +48,15 @@ export const bidApi = createApi({
                 };
             },
         }),
+        createBid: builder.mutation({
+            query(data) {
+                return {
+                    url: "/bid",
+                    method: "POST",
+                    body: data,
+                };
+            },
+        }),
         createImage: builder.mutation({
             query(data) {
                 return {
@@ -68,5 +77,6 @@ export const {
     useGetItemMutation,
     useDeleteItemMutation,
     useUpdateItemMutation,
+    useCreateBidMutation,
     useCreateImageMutation,
 } = bidApi;

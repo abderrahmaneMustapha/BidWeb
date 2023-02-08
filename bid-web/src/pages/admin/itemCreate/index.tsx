@@ -22,7 +22,7 @@ const ItemCreate = () => {
             if (data.success) {
                 setTimeout(() => {
                     navigate("/admin");
-                }, 4000);
+                }, 2000);
             }
         });
     };
@@ -48,7 +48,7 @@ const ItemCreate = () => {
                         message="Item created successfully"
                     ></Alert>
                 )}
-                <ItemForm onSubmit={onSubmit} leave="/admin"></ItemForm>
+                <ItemForm onSubmit={onSubmit} leave="/admin" action="create"></ItemForm>
             </div>
         </AdminLayout>
     );

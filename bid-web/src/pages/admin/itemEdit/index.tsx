@@ -62,7 +62,13 @@ const ItemEdit = () => {
                     onSubmit={onSubmit}
                     leave="/admin"
                     item={getData?.data || {}}
+                    action="edit"
                 ></ItemForm>
+                <div>
+                    <p><strong>Highest bid: </strong> {getData?.data.highest_bid < 1 ? 0:  getData?.data.highest_bid }</p>
+                    <p><strong>Updated at: </strong> {new Date(getData?.data.updated_at).toLocaleString()}</p>
+                    <p><strong>created at: </strong> {new Date(getData?.data.created_at).toLocaleString()}</p>
+                </div>
             </div>
         </AdminLayout>
     );

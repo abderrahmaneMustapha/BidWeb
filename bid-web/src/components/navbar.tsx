@@ -14,7 +14,7 @@ const NavBar = () => {
             <nav className="navbar navbar-expand-lg bg-light">
                 <div className="container-fluid">
                     <a className="navbar-brand" href="/">
-                        Navbar
+                        Bid Web
                     </a>
                     <div>
                         <button

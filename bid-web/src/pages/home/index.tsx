@@ -11,6 +11,7 @@ const Home = () => {
     const [currentItems, setCurrentItems] = useState<number>(0);
     const [search, setSearch] = useState<string>("");
     const [sort, setSort] = useState<number>(-1);
+    const [bidSort, setBidSort] = useState<number>(-1);
     const [open, setOpen] = useState<number>(0);
 
     useEffect(() => {
@@ -20,6 +21,7 @@ const Home = () => {
             search,
             sort,
             open,
+            bidSort
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentItems]);
@@ -66,6 +68,7 @@ const Home = () => {
                                     search,
                                     sort,
                                     open,
+                                    bidSort
                                 })
                             }
                         >
@@ -99,6 +102,7 @@ const Home = () => {
                                 search,
                                 sort: event.target.value,
                                 open,
+                                bidSort
                             });
                         }}
                     >
@@ -112,6 +116,27 @@ const Home = () => {
                     <select
                         className="form-select"
                         onChange={(event) => {
+                            setBidSort(parseInt(event.target.value));
+                            getItems({
+                                limit: pageSize,
+                                skip: currentItems,
+                                search,
+                                sort,
+                                open,
+                                bidSort: event.target.value,
+                            });
+                        }}
+                    >
+                        <option value="-1" selected>
+                            Highest Price
+                        </option>
+                        <option value="1">Lowest Price</option>
+                    </select>
+                </div>
+                <div className="col-md-2 col-sm-12 mb-4 px-4">
+                    <select
+                        className="form-select"
+                        onChange={(event) => {
                             setOpen(parseInt(event.target.value));
                             getItems({
                                 limit: pageSize,
@@ -119,6 +144,7 @@ const Home = () => {
                                 search,
                                 sort,
                                 open: event.target.value,
+                                bidSort,
                             });
                         }}
                     >

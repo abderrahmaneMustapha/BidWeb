@@ -1,9 +1,12 @@
+import { useMatch } from "react-router-dom";
+
 const SideBar = () => {
+    const match = useMatch("/admin");
     return (
         <nav className="navbar bg-light">
             <div className="container-fluid">
                 <a className="navbar-brand" href="/admin">
-                   Admin Dashboard
+                    Admin Dashboard
                 </a>
                 <button
                     className="navbar-toggler"
@@ -32,22 +35,21 @@ const SideBar = () => {
                             data-bs-dismiss="offcanvas"
                             aria-label="Close"
                         ></button>
-                    
                     </div>
                     <div className="offcanvas-body">
                         <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
                             <li className="nav-item">
                                 <a
-                                    className="nav-link active"
+                                    className="nav-link"
                                     aria-current="page"
                                     href="/"
                                 >
                                     Home
                                 </a>
                             </li>
-                            <li className="nav-item">
-                                <a className="nav-link" href="/">
-                                Items
+                            <li className="nav-item ">
+                                <a className="nav-link active" href="/">
+                                    Items
                                 </a>
                             </li>
                         </ul>
@@ -58,4 +60,4 @@ const SideBar = () => {
     );
 };
 
-export default SideBar
+export default SideBar;

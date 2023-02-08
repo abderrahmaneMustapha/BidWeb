@@ -8,8 +8,11 @@ interface Item {
     name: string;
     description: string;
     image: string;
+    highest_bid: number;
     close_at: number;
     created_by: User;
+    created_at: number;
+    updated_at: number;
 }
 interface User {
     username: string;
@@ -24,6 +27,7 @@ interface ItemFormProps {
     onSubmit: (event: ItemFormValues) => void;
     leave: string;
     item?: Item;
+    action: string,
 }
 interface AlertProps {
     type: string;

@@ -1,56 +1,84 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { resizeImage } from "../../common/utils";
+import Alert from "../../components/alert";
+import FormMessage from "../../components/formMessage";
 import DefaultLayout from "../../layouts/default";
-import { useGetItemMutation } from "../../redux/queries";
+import { useCreateBidMutation, useGetItemMutation } from "../../redux/queries";
 
 const defaultImage = "https://via.placeholder.com/250.png/09f/fff";
 
 const Item = () => {
-    const [getItem, { data }] = useGetItemMutation();
+    const [getItem, { data, isLoading }] = useGetItemMutation();
+    const [createBid, { isError, error, isSuccess }] = useCreateBidMutation();
     const { name } = useParams();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [counter, setCounter] = useState(0);
-    const [counterTimeOut, setCounterTimeOut] = useState<NodeJS.Timeout | number | string | undefined>(undefined)
+    const [counterTimeOut, setCounterTimeOut] = useState<
+        NodeJS.Timeout | number | string | undefined
+    >(undefined);
+    const [bidClosed, setBidClosed] = useState<boolean>(false);
+    const [bid, setBid] = useState<number>(0);
 
     useEffect(() => {
-        getItem({ name });
-    }, [getItem, name]);
+        getItem({ name }).then((item: any) => {
+            setBid(
+                item.data?.data.highest_bid < 1
+                    ? 1
+                    : item.data?.data.highest_bid + 1
+            );
+        });
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [getItem, name]);
+    
     useMemo(() => {
         const close_at = data?.data.close_at;
-        console.log(counterTimeOut)
-        if (close_at && (new Date(close_at).getTime() - Date.now()) > 0) {
-            setCounterTimeOut(setTimeout(
-                () => setCounter(new Date(close_at).getTime() - Date.now()),
-                100
-            ))
+        const bid_closed = new Date(close_at).getTime() - Date.now() <= 0;
+        setBidClosed(bid_closed);
+        if (close_at && !bid_closed) {
+            setCounterTimeOut(
+                setTimeout(
+                    () => setCounter(new Date(close_at).getTime() - Date.now()),
+                    100
+                )
+            );
         }
 
         return () => {
-            clearTimeout(counterTimeOut)
-        }
+            clearTimeout(counterTimeOut);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [data?.data.close_at, counter]);
 
-    const countToDate = (count: number) => {
-        const MS_PER_DAY = 1000 * 60 * 60 * 24;
-        const MS_PER_HOUR = 1000 * 60 * 60;
-        const MS_PER_MINUTE = 1000 * 60;
-        const MS_PER_SECONDS = 1000;
-        const DAYS = Math.floor(count / MS_PER_DAY);
-        count -= DAYS * MS_PER_DAY;
-        const HOURS = Math.floor(count / MS_PER_HOUR);
-        count -= HOURS * MS_PER_HOUR;
-        const MINUTES = Math.floor(count / MS_PER_MINUTE);
-        count -= MINUTES * MS_PER_MINUTE;
-        const SECONDS = Math.floor(count / MS_PER_SECONDS);
-        return `${DAYS} days ${HOURS}h: ${MINUTES}m: ${SECONDS}s`;
+    const handleBid = () => {
+        createBid({
+            amount: bid,
+            item: data?.data,
+        }).then((_bid: any) => {
+            if (_bid.data.success) {
+                setTimeout(() => {
+                    navigate("/");
+                }, 2000);
+            }
+        });
     };
-
+    if (isLoading) return <div> Loading ...</div>
     return (
         <DefaultLayout>
             <div className="container h-100">
+                {isError && (
+                    <Alert
+                        type="danger"
+                        message={(error as any).data?.error.description}
+                    ></Alert>
+                )}
+                {isSuccess && (
+                    <Alert
+                        type="success"
+                        message="Bid successfully created"
+                    ></Alert>
+                )}
                 <div className="card my-5 h-75 border-0">
                     <div className="row g-0">
                         <div className="col-md-5 col-sm-12">
@@ -75,12 +103,12 @@ const Item = () => {
                                     {data?.data.description}
                                 </p>
                                 <div className="row align-items-center">
-                                    <div className="col-md-5 mb-3">
+                                    <div className="col-md-5 mb-5">
                                         <p className="card-text fw-bold">
                                             <span className="fw-bolder">
-                                                Last Bid:{" "}
+                                                Highest Bid:{" "}
                                             </span>{" "}
-                                            30$
+                                            {data?.data.highest_bid}$
                                         </p>
                                     </div>
                                     <div className="col-md-5 mb-5">
@@ -89,14 +117,25 @@ const Item = () => {
                                                 $
                                             </span>
                                             <input
-                                                type="text"
+                                                type="number"
                                                 className="form-control"
                                                 aria-label="Text input"
-                                                value={31}
+                                                disabled={bidClosed}
+                                                value={bid}
+                                                defaultValue={bid}
+                                                onChange={(event) => {
+                                                    setBid(
+                                                        Number(
+                                                            event.target.value
+                                                        )
+                                                    );
+                                                }}
                                             />
                                             <button
                                                 type="button"
                                                 className="btn btn-outline-secondary"
+                                                disabled={bidClosed}
+                                                onClick={handleBid}
                                             >
                                                 Place a bid
                                             </button>
@@ -108,6 +147,7 @@ const Item = () => {
                                                 className="form-check-input"
                                                 type="checkbox"
                                                 role="switch"
+                                                disabled={bidClosed}
                                             />
                                             <label className="form-check-label">
                                                 Activate auto bid
@@ -118,14 +158,19 @@ const Item = () => {
                                         <p>
                                             <strong>
                                                 {" "}
-                                                {countToDate(counter)}{" "}
+                                                {bidClosed
+                                                    ? "Bid Closed"
+                                                    : countToDate(counter)}{" "}
                                             </strong>
                                         </p>
                                     </div>
                                     <div className="col-md-5 offset-md-5 mb-3">
-                                        <button className="btn btn-dark float-end" onClick={() => {
-                                            navigate('/')
-                                        }}>
+                                        <button
+                                            className="btn btn-dark float-end"
+                                            onClick={() => {
+                                                navigate("/");
+                                            }}
+                                        >
                                             Leave
                                         </button>
                                     </div>
@@ -137,6 +182,21 @@ const Item = () => {
             </div>
         </DefaultLayout>
     );
+};
+
+const countToDate = (count: number) => {
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    const MS_PER_HOUR = 1000 * 60 * 60;
+    const MS_PER_MINUTE = 1000 * 60;
+    const MS_PER_SECONDS = 1000;
+    const DAYS = Math.floor(count / MS_PER_DAY);
+    count -= DAYS * MS_PER_DAY;
+    const HOURS = Math.floor(count / MS_PER_HOUR);
+    count -= HOURS * MS_PER_HOUR;
+    const MINUTES = Math.floor(count / MS_PER_MINUTE);
+    count -= MINUTES * MS_PER_MINUTE;
+    const SECONDS = Math.floor(count / MS_PER_SECONDS);
+    return `${DAYS} days ${HOURS}h: ${MINUTES}m: ${SECONDS}s`;
 };
 
 export default Item;
