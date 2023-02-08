@@ -17,14 +17,13 @@ class ItemRepository implements IItemRepository {
     async count(search: string, open: 1 | -1 | 0): Promise<number> {
         let openFilter = this.openBidItemFilter(open);
         const result = await this._collection
-            ?.find({
+            ?.countDocuments({
                 $or: [
                     { description: { $regex: search } },
                     { name: { $regex: search } },
                 ],
                 ...openFilter,
             })
-            .count();
         if (result) return result;
         return 0;
     }
@@ -33,9 +32,11 @@ class ItemRepository implements IItemRepository {
         skip: number,
         search: string,
         sort: 1 | -1,
-        open: 1 | -1 | 0
+        open: 1 | -1 | 0,
+        bidSort: 1 | -1 = -1
     ): Promise<Item[]> {
         let openFilter = this.openBidItemFilter(open);
+        console.log(bidSort)
         const result = await this._collection
             ?.find(
                 {
@@ -47,14 +48,16 @@ class ItemRepository implements IItemRepository {
                 },
                 { limit: limit, skip: skip }
             )
-            .sort({ created_by: sort })
+            .sort({highest_bid: bidSort, created_by: sort})
             .toArray();
         return result as unknown as Item[];
     }
+
     async get(id: string): Promise<Item> {
         const result = await this._collection?.findOne({ name: id });
         return result as unknown as Item;
     }
+
     async create(entity: Item): Promise<boolean> {
         try {
             const result = await this._collection?.insertOne(entity);
@@ -64,6 +67,7 @@ class ItemRepository implements IItemRepository {
         }
         return false;
     }
+
     async delete(id: string): Promise<boolean> {
         try {
             const result = await this._collection?.deleteOne({ name: id });
@@ -73,16 +77,25 @@ class ItemRepository implements IItemRepository {
         }
         return false;
     }
+
     async update(id: string, entity: Item): Promise<boolean> {
+        let updateEntity: any = {
+            image: entity.image,
+            description: entity.description,
+            close_at: entity.close_at,
+            updated_at: entity.updated_at,
+        };
+
+        if (entity.highest_bid > 0) {
+            updateEntity = { ...updateEntity, highest_bid: entity.highest_bid };
+        }
+
         try {
             const result = await this._collection?.updateOne(
                 { name: id },
                 {
                     $set: {
-                        image: entity.image,
-                        description: entity.description,
-                        name: entity.name,
-                        close_at: entity.close_at,
+                        ...updateEntity,
                     },
                 }
             );
@@ -100,7 +113,7 @@ class ItemRepository implements IItemRepository {
             validator: {
                 $jsonSchema: {
                     bsonType: "object",
-                    title: "Bid object validation",
+                    title: "Item object validation",
                     required: Item.getAttributes(),
                     properties: {
                         name: Item.getNameValidation(),
@@ -110,6 +123,7 @@ class ItemRepository implements IItemRepository {
                         created_by: Item.getCreatedByValidation(),
                         created_at: Item.getCreatedAtValidation(),
                         updated_at: Item.getUpdatedAtValidation(),
+                        highest_bid: Item.getHighestBidValidation(),
                     },
                 },
             },

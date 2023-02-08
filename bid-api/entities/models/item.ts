@@ -8,6 +8,7 @@ class Item {
     created_by: User;
     created_at: number;
     updated_at: number;
+    highest_bid: number;
 
     constructor(
         name: string,
@@ -16,7 +17,8 @@ class Item {
         close_at: number,
         created_by: User,
         created_at: number,
-        updated_at: number
+        updated_at: number,
+        highest_bid: number
     ) {
         this.name = name;
         this.description = description;
@@ -25,6 +27,7 @@ class Item {
         this.created_by = created_by;
         this.created_at = created_at;
         this.updated_at = updated_at;
+        this.highest_bid = highest_bid;
     }
 
     static getAttributes() {
@@ -36,6 +39,7 @@ class Item {
             "created_by",
             "created_at",
             "updated_at",
+            "highest_bid",
         ];
     }
 
@@ -76,7 +80,7 @@ class Item {
     static getCreatedByValidation() {
         return {
             bsonType: "object",
-            description: "'closed_at' must be a date and is required",
+            description: "'created_by' is required",
         };
     }
 
@@ -91,6 +95,13 @@ class Item {
         return {
             bsonType: "double",
             description: "'updated_at' must be a date and is required",
+        };
+    }
+
+    static getHighestBidValidation() {
+        return {
+            bsonType: "int",
+            description: "'highest_bid' must be a number and it is required",
         };
     }
 }

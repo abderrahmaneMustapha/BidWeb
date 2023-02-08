@@ -16,7 +16,8 @@ const makeUpdateItem = ({ itemRepository }: updateItemArgs) => {
             new Date(close_at).getTime(),
             {} as User,
             0,
-            0
+            new Date().getTime(),
+            0,
         );
         const res = await itemRepository.update(name, item);
         if (!res) {
