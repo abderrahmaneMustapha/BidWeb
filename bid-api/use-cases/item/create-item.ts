@@ -6,9 +6,9 @@ interface createItemArgs {
 }
 
 const makeCreateItem = ({ itemRepository }: createItemArgs) => {
-    return async function createItem({ body }: any) {
+    return async function createItem({ body, user }: any) {
         let { name, description, close_at, image } = body;
-        let user = new User("user", "password", false, Date.now(), Date.now());
+        user = user as User;
         let _item = new Item(
             name,
             description,

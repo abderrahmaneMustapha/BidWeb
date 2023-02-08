@@ -12,6 +12,11 @@ class UserRepository implements IUserRepository {
         is_admin: false,
         created_at: Date.now(),
         updated_at: Date.now(),
+        autoBid: {
+          amount: 300,
+          percentage: 40,
+          items: []
+        }
       },
       {
         username: "user2",
@@ -19,6 +24,11 @@ class UserRepository implements IUserRepository {
         is_admin: false,
         created_at: Date.now(),
         updated_at: Date.now(),
+        autoBid: {
+          amount: 300,
+          percentage: 40,
+          items: []
+        }
       },
       {
         username: "admin1",
@@ -26,6 +36,11 @@ class UserRepository implements IUserRepository {
         is_admin: true,
         created_at: Date.now(),
         updated_at: Date.now(),
+        autoBid: {
+          amount: 300,
+          percentage: 40,
+          items: []
+        }
       },
     ]
   }
@@ -46,6 +61,9 @@ class UserRepository implements IUserRepository {
     throw new Error("Method not implemented.");
   }
   
+  async validate(username: string, password: string): Promise<boolean> {
+    return !!this.data.find(d => d.username === username && d.password === password)
+  }
 }
 
 export default UserRepository

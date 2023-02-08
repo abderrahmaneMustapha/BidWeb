@@ -13,8 +13,27 @@ class BidRepository implements IBidRepository {
         });
     }
 
-    list(): Promise<Bid[]> {
-        throw new Error("Method not implemented.");
+    async count(search: string): Promise<number> {
+        const result = await this._collection?.countDocuments({
+            "item.name": search,
+        });
+        if (result) return result;
+        return 0;
+    }
+
+    async list(
+        limit: number,
+        skip: number,
+        search: string,
+        sort: 1 | -1,
+        open: 1 | -1 | 0,
+        bidSort: 1 | -1 | 0
+    ): Promise<Bid[]> {
+        const result = await this._collection
+            ?.find({ "item.name": search }, { limit: limit, skip: skip })
+            .sort({ amount: -1 })
+            .toArray();
+        return result as unknown as Bid[];
     }
 
     get(id: string): Promise<Bid> {
@@ -43,7 +62,7 @@ class BidRepository implements IBidRepository {
     delete(id: string): Promise<boolean> {
         throw new Error("Method not implemented.");
     }
-    
+
     async update(id: string, entity: Bid): Promise<boolean> {
         const _id: unknown = id;
         try {

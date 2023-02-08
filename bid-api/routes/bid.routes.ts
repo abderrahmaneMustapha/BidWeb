@@ -1,9 +1,11 @@
 import express from "express";
 import controller from "../controllers/bid.controllers"
 import makeHttpCallback from "./utils/make-callback"
+import makeAuth from "./utils/make-auth"
+import { authUser, authAdmin } from "../use-cases/user"
 
 const router = express.Router();
-
-router.route('/bid').post(makeHttpCallback(controller.createBid))
+router.post('/bid', makeAuth(authUser), makeHttpCallback(controller.createBid))
+router.get('/bid', makeAuth(authAdmin), makeHttpCallback(controller.listBid))
 
 export default router

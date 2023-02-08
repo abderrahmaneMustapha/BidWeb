@@ -6,6 +6,7 @@ import routes from "../routes"
 const app = express()
 
 app.use(express.json({limit: '20mb'}))
+
 app.options('*')
 app.use('/', cors(config.CORS), routes)
 
