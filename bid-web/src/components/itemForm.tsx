@@ -33,7 +33,9 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
         reader.onloadend = async () => {
             let image = reader.result as string;
             createImage(image).then(({ data }: any) => {
-                setInputs({ ...inputs, image: data.data.secure_url });
+                setInputs({ ...inputs, image: data?.data?.secure_url });
+            }).catch((error) => {
+                console.log(error)
             });
         };
         if (event.target.files) reader.readAsDataURL(event.target.files[0]);
@@ -80,7 +82,7 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
                     }}
                     accept="image/*"
                 />
-                {inputs.image ? (
+                {(inputs.image && isLoading) ? (
                     <a href={inputs.image} target={"_blank"} rel="noreferrer">
                         uploaded image url
                     </a>

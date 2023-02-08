@@ -106,7 +106,7 @@ const Home = () => {
                             });
                         }}
                     >
-                        <option value="-1" selected>
+                        <option value="-1">
                             Newest
                         </option>
                         <option value="1">Oldest</option>
@@ -127,7 +127,7 @@ const Home = () => {
                             });
                         }}
                     >
-                        <option value="-1" selected>
+                        <option value="-1">
                             Highest Price
                         </option>
                         <option value="1">Lowest Price</option>
@@ -148,7 +148,7 @@ const Home = () => {
                             });
                         }}
                     >
-                        <option value="0" selected>
+                        <option value="0">
                             Closed/Open bids
                         </option>
                         <option value="-1">Closed</option>

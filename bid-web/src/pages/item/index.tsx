@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { resizeImage } from "../../common/utils";
 import Alert from "../../components/alert";
-import FormMessage from "../../components/formMessage";
 import DefaultLayout from "../../layouts/default";
 import { useCreateBidMutation, useGetItemMutation } from "../../redux/queries";
 
@@ -31,7 +30,7 @@ const Item = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getItem, name]);
-    
+
     useMemo(() => {
         const close_at = data?.data.close_at;
         const bid_closed = new Date(close_at).getTime() - Date.now() <= 0;
@@ -63,7 +62,8 @@ const Item = () => {
             }
         });
     };
-    if (isLoading) return <div> Loading ...</div>
+
+    if (isLoading) return <div> Loading ...</div>;
     return (
         <DefaultLayout>
             <div className="container h-100">

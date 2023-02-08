@@ -1,9 +1,18 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BACKEND_URL } from "../../common/confing";
+import { addAuthToHeader } from "../../common/auth";
 
 export const bidApi = createApi({
     reducerPath: "bidApi",
-    baseQuery: fetchBaseQuery({ baseUrl: BACKEND_URL }),
+    baseQuery: fetchBaseQuery({
+        baseUrl: BACKEND_URL,
+        prepareHeaders: (headers) => {
+            const auth = addAuthToHeader();
+            headers.set("authorization", auth.authorization);
+            return headers;
+        },
+    }),
+
     endpoints: (builder) => ({
         getItems: builder.mutation({
             query(data) {
@@ -57,6 +66,25 @@ export const bidApi = createApi({
                 };
             },
         }),
+        listBid: builder.mutation({
+            query(data) {
+                return {
+                    url: `/bid?limit=${data.limit}&skip=${data.skip}&name=${data.name}`,
+                    method: "GET",
+                };
+            },
+        }),
+        authUser: builder.mutation({
+            query(data) {
+                return {
+                    url: "/auth",
+                    method: "POST",
+                    body: {
+                        ...data,
+                    },
+                };
+            },
+        }),
         createImage: builder.mutation({
             query(data) {
                 return {
@@ -78,5 +106,7 @@ export const {
     useDeleteItemMutation,
     useUpdateItemMutation,
     useCreateBidMutation,
+    useListBidMutation,
+    useAuthUserMutation,
     useCreateImageMutation,
 } = bidApi;

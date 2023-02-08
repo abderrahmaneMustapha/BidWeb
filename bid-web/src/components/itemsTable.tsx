@@ -20,7 +20,7 @@ const ItemsTable = ({ data, onDelete }: any) => {
                     {data &&
                         data.map((d: any, index: number) => (
                             <tr key={d.name}>
-                                <th scope="row">{index + 1}</th>
+                                <td>{index + 1}</td>
                                 <td>{d.name}</td>
                                 <td>
                                     <div className="dropdown">
@@ -49,6 +49,14 @@ const ItemsTable = ({ data, onDelete }: any) => {
                                                 >
                                                     Delete
                                                 </button>
+                                            </li>
+                                            <li>
+                                                <NavLink
+                                                    className="dropdown-item"
+                                                    to={`/admin/item/${d.name}/history`}
+                                                >
+                                                    Bid History
+                                                </NavLink>
                                             </li>
                                         </ul>
                                     </div>

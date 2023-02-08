@@ -14,10 +14,18 @@ interface Item {
     created_at: number;
     updated_at: number;
 }
+interface AutoBid {
+    amount: number;
+    percentage: number;
+    items: string[];
+}
 interface User {
     username: string;
     password: string;
     is_admin: boolean;
+    created_at: number;
+    updated_at: number;
+    autoBid: AutoBid;
 }
 interface CardProps {
     to: string;
@@ -27,7 +35,7 @@ interface ItemFormProps {
     onSubmit: (event: ItemFormValues) => void;
     leave: string;
     item?: Item;
-    action: string,
+    action: string;
 }
 interface AlertProps {
     type: string;

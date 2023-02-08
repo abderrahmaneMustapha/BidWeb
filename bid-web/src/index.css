@@ -16,3 +16,11 @@ code {
 #root {
   min-height: 100vh;
 }
+.d-sm-none {
+  display: unset;
+}
+@media (max-width: 600px)  {
+  .d-sm-none {
+    display: none;
+  }
+}

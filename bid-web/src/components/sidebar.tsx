@@ -1,7 +1,8 @@
-import { useMatch } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { removeUserFromStorage } from "../common/auth";
 
 const SideBar = () => {
-    const match = useMatch("/admin");
+    const navigate = useNavigate();
     return (
         <nav className="navbar bg-light">
             <div className="container-fluid">
@@ -48,9 +49,21 @@ const SideBar = () => {
                                 </a>
                             </li>
                             <li className="nav-item ">
-                                <a className="nav-link active" href="/">
+                                <a className="nav-link active" href="/admin">
                                     Items
                                 </a>
+                            </li>
+
+                            <li className="nav-item ">
+                                <span
+                                    className="nav-link active"
+                                    onClick={() => {
+                                        removeUserFromStorage();
+                                        navigate("/login");
+                                    }}
+                                >
+                                    Logout
+                                </span>
                             </li>
                         </ul>
                     </div>
