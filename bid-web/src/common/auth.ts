@@ -5,8 +5,7 @@ const key = CREDENTIALS_STORE_KEY || "bid-web-credentials";
 const addAuthToHeader = () => {
     const default_value = JSON.stringify({ username: "", password: "" });
     const credentials = JSON.parse(localStorage.getItem(key) || default_value);
-
-    console.log(credentials);
+    
     const res = {
         authorization: `Basic ${credentials.username}-${credentials.password}`,
     };

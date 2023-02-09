@@ -16,6 +16,9 @@ code {
 #root {
   min-height: 100vh;
 }
+div.modal {
+  display: unset;
+}
 .d-sm-none {
   display: unset;
 }

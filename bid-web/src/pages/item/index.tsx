@@ -3,13 +3,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import { resizeImage } from "../../common/utils";
 import Alert from "../../components/alert";
 import DefaultLayout from "../../layouts/default";
-import { useCreateBidMutation, useGetItemMutation } from "../../redux/queries";
+import {
+    useCreateBidMutation,
+    useGetItemMutation,
+    useGetUserMutation,
+    useUpdateUserMutation,
+} from "../../redux/queries";
 
 const defaultImage = "https://via.placeholder.com/250.png/09f/fff";
 
 const Item = () => {
     const [getItem, { data, isLoading }] = useGetItemMutation();
     const [createBid, { isError, error, isSuccess }] = useCreateBidMutation();
+    const [updateUser, { isError: updateError  }] =
+        useUpdateUserMutation();
+    const [getUser, { isLoading: isLoadingUser }] = useGetUserMutation();
+
+    const [autoBid, setAutoBid] = useState(false);
+
     const { name } = useParams();
     const navigate = useNavigate();
     const [counter, setCounter] = useState(0);
@@ -25,6 +36,13 @@ const Item = () => {
                 item.data?.data.highest_bid < 1
                     ? 1
                     : item.data?.data.highest_bid + 1
+            );
+        });
+
+        getUser({}).then((data: any) => {
+            setAutoBid(
+                data?.data.data.autoBid.items.some((s: string) => s === name) ||
+                    false
             );
         });
 
@@ -63,22 +81,41 @@ const Item = () => {
         });
     };
 
-    if (isLoading) return <div> Loading ...</div>;
+    const handleAutoBidChange = () => {
+        updateUser({ item: name }).then((data:any) => {
+            if (data?.data.success) {
+                setAutoBid(!autoBid)
+            }
+        });
+    };
+
+    const handleMessages = () => {
+        if (updateError)
+            return (
+                <Alert
+                    type="danger" message="Item could not be set to auto bid"
+                ></Alert>
+            );
+        if (isError)
+            return (
+                <Alert
+                    type="danger" message={(error as any).data?.error.description}
+                ></Alert>
+            );
+
+        if (isSuccess)
+            return (
+                <Alert
+                    type="success" message="Bid successfully created"
+                ></Alert>
+            );
+    };
+
+    if (isLoading || isLoadingUser) return <div> Loading ...</div>;
     return (
         <DefaultLayout>
             <div className="container h-100">
-                {isError && (
-                    <Alert
-                        type="danger"
-                        message={(error as any).data?.error.description}
-                    ></Alert>
-                )}
-                {isSuccess && (
-                    <Alert
-                        type="success"
-                        message="Bid successfully created"
-                    ></Alert>
-                )}
+                {handleMessages()}
                 <div className="card my-5 h-75 border-0">
                     <div className="row g-0">
                         <div className="col-md-5 col-sm-12">
@@ -122,7 +159,6 @@ const Item = () => {
                                                 aria-label="Text input"
                                                 disabled={bidClosed}
                                                 value={bid}
-                                                defaultValue={bid}
                                                 onChange={(event) => {
                                                     setBid(
                                                         Number(
@@ -147,7 +183,9 @@ const Item = () => {
                                                 className="form-check-input"
                                                 type="checkbox"
                                                 role="switch"
+                                                checked={autoBid}
                                                 disabled={bidClosed}
+                                                onChange={handleAutoBidChange}
                                             />
                                             <label className="form-check-label">
                                                 Activate auto bid

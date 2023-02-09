@@ -105,7 +105,7 @@ const Admin = () => {
                                 })
                             }}
                         >
-                            <option value="-1" selected>Newest</option>
+                            <option value="-1">Newest</option>
                             <option value="1">Oldest</option>
                         </select>
                     </div>
@@ -123,7 +123,7 @@ const Admin = () => {
                                 })
                             }}
                         >
-                            <option value="0" selected>Closed/Open bids</option>
+                            <option value="0">Closed/Open bids</option>
                             <option value="-1">Closed</option>
                             <option value="1">Open</option>
                         </select>

@@ -11,7 +11,7 @@ const AdminRoute = ({
 }) => {
     const user: User | undefined = getUserFromStorage();
     let location = useLocation();
-    if (!user?.is_admin || location.pathname.includes("admin")) {
+    if (!user?.is_admin && location.pathname.includes("admin")) {
         return <Navigate to={redirectPath} replace />;
     }
 

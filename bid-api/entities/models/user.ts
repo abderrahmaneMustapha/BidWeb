@@ -1,5 +1,6 @@
 interface AutoBid {
   amount: number;
+  amountInitial:number
   percentage: number;
   items: string[]
 }

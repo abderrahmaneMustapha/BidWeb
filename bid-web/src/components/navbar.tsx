@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserFromStorage, removeUserFromStorage } from "../common/auth";
+import AutoBidModal from "./autoBidModal";
 import Modal from "./modal";
 
 const NavBar = () => {
@@ -10,8 +11,8 @@ const NavBar = () => {
     });
     const navigate = useNavigate();
 
-    const handleModal = () => {
-        setHideModal(!hideModal);
+    const showModal = () => {
+        setHideModal(false);
     };
     return (
         <>
@@ -26,7 +27,7 @@ const NavBar = () => {
                                 <button
                                     title="Configure auto bid"
                                     className="btn btn-light"
-                                    onClick={handleModal}
+                                    onClick={showModal}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +78,7 @@ const NavBar = () => {
                     </div>
                 </div>
             </nav>
-            <Modal hide={hideModal} content={"azeaze"} />
+            <AutoBidModal hide={hideModal} onClose={() => setHideModal(true)}></AutoBidModal>
         </>
     );
 };

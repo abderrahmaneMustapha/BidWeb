@@ -85,6 +85,27 @@ export const bidApi = createApi({
                 };
             },
         }),
+        updateUser: builder.mutation({
+            query(data) {
+                return {
+                    url: "/user",
+                    method: "PATCH",
+                    body: {
+                        ...data
+                    }
+                }
+
+            }
+        }),
+        getUser: builder.mutation({
+            query(data) {
+                return {
+                    url: "/user",
+                    method: "GET",
+                }
+
+            }
+        }),
         createImage: builder.mutation({
             query(data) {
                 return {
@@ -108,5 +129,7 @@ export const {
     useCreateBidMutation,
     useListBidMutation,
     useAuthUserMutation,
+    useUpdateUserMutation,
+    useGetUserMutation,
     useCreateImageMutation,
 } = bidApi;
