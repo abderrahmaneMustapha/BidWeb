@@ -82,11 +82,13 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
                     }}
                     accept="image/*"
                 />
-                {(inputs.image && isLoading) ? (
+                {(inputs.image && !isLoading) && (
                     <a href={inputs.image} target={"_blank"} rel="noreferrer">
                         uploaded image url
                     </a>
-                ) :  ( (isLoading && !isError ) && (<strong>Please wait image is being uploaded</strong>))}
+                )}
+                    
+                {(isLoading && !isError) && (<strong>Please wait image is being uploaded</strong>)}
                 {isError && (
                     <FormMessage
                         type="invalid"

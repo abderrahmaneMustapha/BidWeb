@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserFromStorage, removeUserFromStorage } from "../common/auth";
+import { useNotifyUserMutation } from "../redux/queries";
 import AutoBidModal from "./autoBidModal";
 import Modal from "./modal";
 
 const NavBar = () => {
     const [hideModal, setHideModal] = useState(true);
-    const [isLogin,] = useState(() => {
+    const [isLogin] = useState(() => {
         return !!getUserFromStorage()?.username;
     });
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
     const showModal = () => {
         setHideModal(false);
     };
@@ -21,7 +22,7 @@ const NavBar = () => {
                     <a className="navbar-brand" href="/">
                         Bid Web
                     </a>
-                    <div>
+                    <div className="d-flex flex-row">
                         {isLogin && (
                             <>
                                 <button
@@ -67,6 +68,14 @@ const NavBar = () => {
                                 <button
                                     className="btn btn-light"
                                     onClick={() => {
+                                        navigate("/notifications");
+                                    }}
+                                >
+                                    Notifications
+                                </button>
+                                <button
+                                    className="btn btn-light"
+                                    onClick={() => {
                                         removeUserFromStorage();
                                         navigate("/login");
                                     }}
@@ -78,7 +87,10 @@ const NavBar = () => {
                     </div>
                 </div>
             </nav>
-            <AutoBidModal hide={hideModal} onClose={() => setHideModal(true)}></AutoBidModal>
+            <AutoBidModal
+                hide={hideModal}
+                onClose={() => setHideModal(true)}
+            ></AutoBidModal>
         </>
     );
 };

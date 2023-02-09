@@ -16,7 +16,6 @@ const BidHistory = () => {
   const [listBid, { isError, data }] = useListBidMutation();
   const [currentItems, setCurrentItems] = useState<number>(0);
   const { name } = useParams()
-console.log(name)
   useEffect(() => {
         listBid({
           limit: pageSize,
@@ -46,7 +45,6 @@ console.log(name)
 
       return currentItems + pageSize;
   };
-  console.log(data)
   return (
       <AdminLayout>
           <div className="container p-md-5">

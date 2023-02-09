@@ -18,6 +18,7 @@ import BidHistory from "./pages/admin/bidHistory";
 import Login from "./pages/auth";
 import ProtectedRoute from "./components/protectedRoute";
 import AdminRoute from "./components/adminRoute";
+import Notifications from "./pages/notifications";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -41,6 +42,14 @@ const router = createBrowserRouter([
         element: (
             <ProtectedRoute>
                 <Item />
+            </ProtectedRoute>
+        ),
+    },
+    {
+        path: "/notifications",
+        element: (
+            <ProtectedRoute>
+                <Notifications />
             </ProtectedRoute>
         ),
     },

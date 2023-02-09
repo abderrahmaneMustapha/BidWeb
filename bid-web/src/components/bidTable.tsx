@@ -14,7 +14,7 @@ const BidTable = ({ data }: any) => {
                 <tbody>
                     {data &&
                         data.map((d: any, index: number) => (
-                            <tr key={d.name}>
+                            <tr key={d._id}>
                                 <td className="d-md-table-cell d-sm-none">{index + 1}</td>
                                 <td>{d.user.username}</td>
                                 <td>{d.amount}</td>

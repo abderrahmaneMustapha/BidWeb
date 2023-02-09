@@ -35,7 +35,7 @@ const Login = () => {
 
         setIsValid(false);
     };
-    console.log(error);
+    
     return (
         <DefaultLayout>
             <div className="container h-100">

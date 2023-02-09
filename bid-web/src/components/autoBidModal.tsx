@@ -19,39 +19,46 @@ const AutoBidModal = ({
 
     useEffect(() => {
         getUser({}).then((data: any) => {
-            setAmount(data?.data.data.autoBid.amountInitial || 0);
+            setAmount(data?.data.data.autoBid.amount || 0);
             setPercentage(data?.data.data.autoBid.percentage || 0);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onSubmit = () => {
-        if(!amount || !percentage) {
+        if(!amount || !percentage || percentage > 100  || percentage < 0) {
             setIsValid(false)
             return
         }
 
         updateUser({ amount, percentage, amountInitial: amount }).then((data: any) => {
-            if (data?.data.success) 
+            if (data?.data.success) {
+                setIsValid(true)
                 setTimeout(() => {
-                    setIsValid(undefined)
-                    onClose?.()
-                   
+                    onClose?.()  
                 }, 2000)
+            }
+               
         });
     };
+
+    const _onClose = () => {
+        setIsValid(undefined)
+        onClose?.()
+    }
 
     return (
         <>
             <Modal
+            title={"Update auto bid parameters"}
                 hide={hide}
                 onSubmit={onSubmit}
-                onClose={onClose}
+                onClose={_onClose}
                 content={
                     <>
-                        {isValid && (
+                        {isValid  === false && (
                             <Alert
-                                message="All fields are required"
+                                message="Form validation error"
                                 type="danger"
                             ></Alert>
                         )}
@@ -61,7 +68,7 @@ const AutoBidModal = ({
                                 type="danger"
                             ></Alert>
                         )}
-                        {isSuccess && (
+                        {(isSuccess && isValid !== false) && (
                             <Alert
                                 message="Parameters updated successfully"
                                 type="success"
@@ -88,6 +95,8 @@ const AutoBidModal = ({
                                 type={"number"}
                                 className="form-control"
                                 value={percentage}
+                                min={0}
+                                max={100}
                                 onChange={(event) => {
                                     setPercentage(parseInt(event.target.value));
                                 }}

@@ -66,6 +66,7 @@ const ItemsTable = ({ data, onDelete }: any) => {
                 </tbody>
             </table>
             <Modal
+                title={"Confirm delete"}
                 hide={hideModal}
                 content={`Are you sure you want to delete this Item ${selectedItem}`}
                 onSubmit={() => {

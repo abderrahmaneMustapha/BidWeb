@@ -106,6 +106,15 @@ export const bidApi = createApi({
 
             }
         }),
+        notifyUser: builder.mutation({
+            query(data) {
+                return {
+                    url: "/user/notifications",
+                    method: "GET",
+                }
+
+            }
+        }),
         createImage: builder.mutation({
             query(data) {
                 return {
@@ -132,4 +141,5 @@ export const {
     useUpdateUserMutation,
     useGetUserMutation,
     useCreateImageMutation,
+    useNotifyUserMutation,
 } = bidApi;
