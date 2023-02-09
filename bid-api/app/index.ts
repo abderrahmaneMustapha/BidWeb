@@ -2,6 +2,7 @@ import express from "express"
 import cors from "cors"
 import config from "./config"
 import routes from "../routes"
+import "./events"
 
 const app = express()
 

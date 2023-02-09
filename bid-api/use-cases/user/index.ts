@@ -3,6 +3,7 @@ import makeAuthAdmin from "./auth-admin";
 import makeAuthUser from "./auth-user";
 import makeGetUser from "./get-user";
 import makeLoginUser from "./login-user";
+import makeNotifyUser from "./notify-user";
 import makeUpdateUser from "./update-user";
 
 const userRepository = new UserRepository();
@@ -12,13 +13,15 @@ const loginUser = makeLoginUser({ userRepository });
 const authAdmin = makeAuthAdmin({ userRepository });
 const updateUser = makeUpdateUser({ userRepository });
 const getUser = makeGetUser({ userRepository });
+const notifyUser = makeNotifyUser({ userRepository });
 
-export { authUser, loginUser, authAdmin, updateUser, getUser };
+export { authUser, loginUser, authAdmin, updateUser, getUser, notifyUser };
 
 export default Object.freeze({
     loginUser,
     authUser,
     authAdmin,
     updateUser,
-    getUser
+    getUser,
+    notifyUser
 });

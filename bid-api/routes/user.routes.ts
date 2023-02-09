@@ -9,5 +9,7 @@ const router = express.Router();
 router.route('/auth').post(makeHttpCallback(controller.loginUser))
 router.patch('/user', makeAuth(authUser), makeHttpCallback(controller.updateUser))
 router.get('/user', makeAuth(authUser), makeHttpCallback(controller.getUser))
+router.get('/user/notifications', makeAuth(authUser), makeHttpCallback(controller.notifyUser))
+
 
 export default router

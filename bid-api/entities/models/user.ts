@@ -2,7 +2,7 @@ interface AutoBid {
   amount: number;
   amountInitial:number
   percentage: number;
-  items: string[]
+  items: string[],
 }
 class User {
   username: string;
@@ -10,14 +10,17 @@ class User {
   is_admin: boolean;
   created_at: number;
   updated_at: number;
-  autoBid: AutoBid
-  constructor(username: string, password: string, is_admin: boolean, created_at: number, updated_at: number, autoBid: AutoBid) {
+  autoBid: AutoBid;
+  notifications?: string[];
+
+  constructor(username: string, password: string, is_admin: boolean, created_at: number, updated_at: number, autoBid: AutoBid, notifications: string[]) {
     this.username = username;
     this.password = password;
     this.is_admin = is_admin;
     this.created_at = created_at;
     this.updated_at = updated_at;
     this.autoBid = autoBid;
+    this.notifications = notifications;
   }
 }
 

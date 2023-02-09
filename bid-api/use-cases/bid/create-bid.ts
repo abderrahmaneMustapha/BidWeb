@@ -1,13 +1,14 @@
 import { Bid, User } from "../../entities/models";
 import BidRepository from "../../entities/repositories/mongo/bidRepository";
 import ItemRepository from "../../entities/repositories/mongo/itemRepository";
-
+import { EventEmitter } from "node:events"
 interface createBidArgs {
     bidRepository: BidRepository;
     itemRepository: ItemRepository;
+    eventEmitter: EventEmitter,
 }
 
-const makeCreateBid = ({ bidRepository, itemRepository }: createBidArgs) => {
+const makeCreateBid = ({ bidRepository, itemRepository, eventEmitter }: createBidArgs) => {
     return async function createBid({ body, user }: any) {
         let { amount, item } = body;
 
@@ -20,9 +21,12 @@ const makeCreateBid = ({ bidRepository, itemRepository }: createBidArgs) => {
         
         if (bidCreated && bidCreated.acknowledged) {
             await updateDb(itemRepository,item,amount,_bid,bidRepository,bidCreated);
+            emitEvent(item.name, user.username, eventEmitter)
         } else {
             throw new Error("Server could not create a bid");
         }
+
+        return bidCreated?.acknowledged
     };
 };
 
@@ -54,6 +58,10 @@ async function updateDb(
     await itemRepository.update(item.name, _item);
     _bid = { ..._bid, item: _item };
     await bidRepository.update(bidCreated.insertedIn, _bid);
+}
+
+function emitEvent(itemName: string, username: string, eventEmitter: EventEmitter) {
+    eventEmitter.emit('auto-bid', {item: itemName, user: username})
 }
 
 export default makeCreateBid;
