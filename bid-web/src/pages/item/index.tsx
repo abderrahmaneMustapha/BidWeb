@@ -7,6 +7,7 @@ import {
     useCreateBidMutation,
     useGetItemMutation,
     useGetUserMutation,
+    useMaxBidMutation,
     useUpdateUserMutation,
 } from "../../redux/queries";
 
@@ -14,9 +15,9 @@ const defaultImage = "https://via.placeholder.com/250.png/09f/fff";
 
 const Item = () => {
     const [getItem, { data, isLoading }] = useGetItemMutation();
+    const [getMaxBid] = useMaxBidMutation();
     const [createBid, { isError, error, isSuccess }] = useCreateBidMutation();
-    const [updateUser, { isError: updateError  }] =
-        useUpdateUserMutation();
+    const [updateUser, { isError: updateError }] = useUpdateUserMutation();
     const [getUser, { isLoading: isLoadingUser }] = useGetUserMutation();
 
     const [autoBid, setAutoBid] = useState(false);
@@ -29,13 +30,14 @@ const Item = () => {
     >(undefined);
     const [bidClosed, setBidClosed] = useState<boolean>(false);
     const [bid, setBid] = useState<number>(0);
+    const [maxBidUser, setMaxBidUser] = useState<string>("");
 
     useEffect(() => {
-        getItem({ name }).then((item: any) => {
-            setBid(
-                item.data?.data.highest_bid < 1
-                    ? 1
-                    : item.data?.data.highest_bid + 1
+        getItem({ name });
+        getMaxBid({ name }).then((bid: any) => {
+            setBid(bid.data?.data.amount < 1 ? 1 : bid.data?.data.amount + 1);
+            setMaxBidUser(
+                bid.data?.data.user.username ? bid.data?.data.user.username : ""
             );
         });
 
@@ -48,7 +50,6 @@ const Item = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getItem, name]);
-
     useMemo(() => {
         const close_at = data?.data.close_at;
         const bid_closed = new Date(close_at).getTime() - Date.now() <= 0;
@@ -82,9 +83,9 @@ const Item = () => {
     };
 
     const handleAutoBidChange = () => {
-        updateUser({ item: name }).then((data:any) => {
+        updateUser({ item: name }).then((data: any) => {
             if (data?.data.success) {
-                setAutoBid(!autoBid)
+                setAutoBid(!autoBid);
             }
         });
     };
@@ -93,20 +94,23 @@ const Item = () => {
         if (updateError)
             return (
                 <Alert
-                    type="danger" message="Item could not be set to auto bid"
+                    type="danger"
+                    message="Item could not be set to auto bid"
                 ></Alert>
             );
         if (isError)
             return (
                 <Alert
-                    type="danger" message={(error as any).data?.error.description}
+                    type="danger"
+                    message={(error as any).data?.error.description}
                 ></Alert>
             );
 
         if (isSuccess)
             return (
                 <Alert
-                    type="success" message="Bid successfully created"
+                    type="success"
+                    message="Bid successfully created"
                 ></Alert>
             );
     };
@@ -141,14 +145,22 @@ const Item = () => {
                                 </p>
                                 <div className="row align-items-center">
                                     <div className="col-md-5 mb-5">
-                                        <p className="card-text fw-bold">
-                                            <span className="fw-bolder">
-                                                Highest Bid:{" "}
-                                            </span>{" "}
+                                        <p className="fw-bold">
+                                            <strong className="fw-bolder">
+                                                Highest Bid:
+                                            </strong>
                                             {data?.data.highest_bid}$
                                         </p>
                                     </div>
-                                    <div className="col-md-5 mb-5">
+                                    <div  hidden={!bidClosed} className="col-md-5 mb-5">
+                                        <p>
+                                            Winner: <strong>{maxBidUser}</strong>
+                                        </p>
+                                    </div>
+                                    <div
+                                        hidden={bidClosed}
+                                        className="col-md-5 mb-5"
+                                    >
                                         <div className="input-group float-end">
                                             <span className="input-group-text">
                                                 $
@@ -177,7 +189,10 @@ const Item = () => {
                                             </button>
                                         </div>
                                     </div>
-                                    <div className="col-md-5 mb-5">
+                                    <div
+                                        hidden={bidClosed}
+                                        className="col-md-5 mb-5"
+                                    >
                                         <div className="form-check form-switch float-start">
                                             <input
                                                 className="form-check-input"
@@ -192,13 +207,13 @@ const Item = () => {
                                             </label>
                                         </div>
                                     </div>
-                                    <div className="col-md-5 mb-5">
+                                    <div
+                                        hidden={bidClosed}
+                                        className="col-md-5 mb-5"
+                                    >
                                         <p>
                                             <strong>
-                                                {" "}
-                                                {bidClosed
-                                                    ? "Bid Closed"
-                                                    : countToDate(counter)}{" "}
+                                                {countToDate(counter)}
                                             </strong>
                                         </p>
                                     </div>

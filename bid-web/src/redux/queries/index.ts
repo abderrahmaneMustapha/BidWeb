@@ -74,6 +74,14 @@ export const bidApi = createApi({
                 };
             },
         }),
+        maxBid: builder.mutation({
+            query(data) {
+                return {
+                    url: `/bid/${data.name}/max`,
+                    method: "GET",
+                };
+            },
+        }),
         authUser: builder.mutation({
             query(data) {
                 return {
@@ -137,6 +145,7 @@ export const {
     useUpdateItemMutation,
     useCreateBidMutation,
     useListBidMutation,
+    useMaxBidMutation,
     useAuthUserMutation,
     useUpdateUserMutation,
     useGetUserMutation,
