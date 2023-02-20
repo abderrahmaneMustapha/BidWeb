@@ -23,12 +23,28 @@ const CDN = {
   apiKey: process.env.CDNAPIKEY
 }
 
+const SMTP = {
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASSWORD,
+  },
+}
 
-export { PORT, CORS, MONGODB, CDN }
+const JOBS = {
+  bidWonInterval: process.env.BID_WON_CHECK_INTERVAL || 5,
+  bidWonGoBack: process.env.BID_WON_GOING_BACK || 30,
+}
+
+export { PORT, CORS, MONGODB, CDN, JOBS, SMTP }
 
 export default Object.freeze({
   PORT,
   CORS,
   MONGODB,
-  CDN
+  CDN,
+  JOBS,
+  SMTP
 })

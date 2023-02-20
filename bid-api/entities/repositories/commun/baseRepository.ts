@@ -3,9 +3,7 @@ interface IBaseRepository<T> {
         limit: number,
         skip: number,
         search: string,
-        sort: 1 | -1,
-        open: 1 | -1 | 0,
-        bidSort: 1 | -1,
+        filters:any
     ): Promise<T[]>;
     get(id: string): Promise<T>;
     create(entity: T): Promise<boolean>;

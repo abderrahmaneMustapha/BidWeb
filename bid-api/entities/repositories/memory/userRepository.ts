@@ -6,6 +6,7 @@ class UserRepository implements IUserRepository {
         {
             username: "user1",
             password: "user2",
+            email: "yacineahmednoob@gmail.com",
             is_admin: false,
             created_at: Date.now(),
             updated_at: Date.now(),
@@ -19,6 +20,7 @@ class UserRepository implements IUserRepository {
         {
             username: "user2",
             password: "user3",
+            email: "abderrahmanemustapha030898@gmail.com",
             is_admin: false,
             created_at: Date.now(),
             updated_at: Date.now(),
@@ -32,6 +34,7 @@ class UserRepository implements IUserRepository {
         {
             username: "admin1",
             password: "admin2",
+            email: "abdmusttoumi@gmail.com",
             is_admin: true,
             created_at: Date.now(),
             updated_at: Date.now(),
@@ -52,9 +55,7 @@ class UserRepository implements IUserRepository {
         limit: number,
         skip: number,
         search: string,
-        sort: 1 | -1,
-        open: 1 | -1 | 0,
-        bidSort: 1 | -1 | 0
+        filters: any
     ): Promise<User[]> {
         return UserRepository.data.filter(user => {
             return user.autoBid.items.some(item => item === search)
@@ -83,7 +84,7 @@ class UserRepository implements IUserRepository {
             });
             return true;
         }
-
+        console.log(UserRepository.data)
         return false;
     }
 

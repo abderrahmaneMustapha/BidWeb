@@ -30,12 +30,15 @@ class ItemRepository implements IItemRepository {
         limit: number,
         skip: number,
         search: string,
-        sort: 1 | -1,
-        open: 1 | -1 | 0,
-        bidSort: 1 | -1 | 0
+        filters: any
     ): Promise<Item[]> {
-        let openFilter = this.openBidItemFilter(open);
+        const { sort, open, bidSort, maxTime, minTime} = filters;
+        let openFilter: any = this.openBidItemFilter(open);
         let sortFilter = this.sortBidItemFilter(sort, bidSort);
+
+        if (maxTime && minTime)
+            openFilter = {close_at: { $gte: minTime, $lte: maxTime }};
+
         const result = await this._collection
             ?.find(
                 {
@@ -150,9 +153,9 @@ class ItemRepository implements IItemRepository {
 
     private sortBidItemFilter(sort: 1 | -1, bidSort: 1 | -1 | 0): Sort {
         if (!bidSort) {
-            return {created_by: sort }
+            return { created_by: sort };
         }
-         return { highest_bid: (bidSort as 1 | -1 ), created_by: sort }
+        return { highest_bid: bidSort as 1 | -1, created_by: sort };
     }
 }
 

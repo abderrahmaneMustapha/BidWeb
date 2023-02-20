@@ -11,9 +11,7 @@ const makeListBid = ({ bidRepository }: listBidArgs) => {
             parseInt(limit),
             parseInt(skip),
             name,
-            1,
-            0,
-            0
+            {}
         );
         const count = await bidRepository.count(name);
         return { data: result, count };

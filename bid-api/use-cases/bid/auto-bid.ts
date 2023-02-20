@@ -20,7 +20,7 @@ const makeAutoBid = ({
     itemRepository,
 }: autoBidArgs) => {
     return async function autoBid({ user, item }: innerAutoBidArgs) {
-        const users = await userRepository.list(0, 0, item, 1, 0, 0);
+        const users = await userRepository.list(0, 0, item, {});
         for (let _user of users) {
             if (_user.autoBid.amount <= 0 ) {
                 addNotification(_user, "Amount is not sufficient to continue auto bid")

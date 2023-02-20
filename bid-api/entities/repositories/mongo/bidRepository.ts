@@ -25,12 +25,13 @@ class BidRepository implements IBidRepository {
         limit: number,
         skip: number,
         search: string,
-        sort: 1 | -1,
-        open: 1 | -1 | 0,
-        bidSort: 1 | -1 | 0
+        filters: any
     ): Promise<Bid[]> {
+        let find: any = {
+            "item.name": search,
+        };
         const result = await this._collection
-            ?.find({ "item.name": search }, { limit: limit, skip: skip })
+            ?.find(find, { limit: limit, skip: skip })
             .sort({ amount: -1 })
             .toArray();
         return result as unknown as Bid[];
