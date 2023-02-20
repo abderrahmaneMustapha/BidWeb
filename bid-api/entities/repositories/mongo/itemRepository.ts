@@ -35,10 +35,8 @@ class ItemRepository implements IItemRepository {
         const { sort, open, bidSort, maxTime, minTime} = filters;
         let openFilter: any = this.openBidItemFilter(open);
         let sortFilter = this.sortBidItemFilter(sort, bidSort);
-
         if (maxTime && minTime)
             openFilter = {close_at: { $gte: minTime, $lte: maxTime }};
-
         const result = await this._collection
             ?.find(
                 {

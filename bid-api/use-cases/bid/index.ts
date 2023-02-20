@@ -17,6 +17,7 @@ const eventEmitter = new EventEmitter();
 const createBid = makeCreateBid({
     bidRepository,
     itemRepository,
+    userRepository,
     eventEmitter,
 });
 const listBid = makeListBid({ bidRepository });

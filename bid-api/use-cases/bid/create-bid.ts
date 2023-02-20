@@ -2,33 +2,37 @@ import { Bid, Item, User } from "../../entities/models";
 import BidRepository from "../../entities/repositories/mongo/bidRepository";
 import ItemRepository from "../../entities/repositories/mongo/itemRepository";
 import { EventEmitter } from "node:events";
+import { emailUser } from "../email";
+import UserRepository from "../../entities/repositories/memory/userRepository";
 
 interface createBidArgs {
     bidRepository: BidRepository;
     itemRepository: ItemRepository;
+    userRepository: UserRepository;
     eventEmitter: EventEmitter,
 }
 
-const makeCreateBid = ({ bidRepository, itemRepository, eventEmitter }: createBidArgs) => {
+const makeCreateBid = ({ bidRepository, itemRepository, userRepository, eventEmitter }: createBidArgs) => {
     return async function createBid({ body, user }: any) {
         let { amount, item } = body;
         user = user as User;
         let _bid = new Bid(parseInt(amount),user,item,Date.now(),Date.now());
         let _item = await itemRepository.get(item.name);
-
         await handleBidErrors(bidRepository, item, user, amount, _item);
         const bidCreated: any = await bidRepository.create(_bid);
-
         if (bidCreated && bidCreated.acknowledged) {
-            await updateDb(itemRepository,item,amount,_bid, _item ,bidRepository,bidCreated);
+            await updateDb(itemRepository, item, amount, _bid, _item, bidRepository, bidCreated);
+            sendEmail(user.email, item.name, Number(amount))
+            emailUsers(user.username, item.name, amount, userRepository, bidRepository)
             emitEvent(item.name, user.username, eventEmitter)
         } else {
             throw new Error("Server could not create a bid");
         }
-
         return bidCreated?.acknowledged
     };
 };
+
+export default makeCreateBid;
 
 async function handleBidErrors(
     bidRepository: BidRepository,
@@ -69,4 +73,21 @@ function emitEvent(itemName: string, username: string, eventEmitter: EventEmitte
     eventEmitter.emit('auto-bid', {item: itemName, user: username})
 }
 
-export default makeCreateBid;
+function sendEmail(userEmail: string, itemName: string, amount: number) {
+    const text = `You have created a bid on ${itemName}, with the amount ${amount}, item still open for bid`
+    const subject = "Bid Created Successfully"
+    emailUser({userEmail, subject, text})
+}
+
+async function emailUsers(user: string, item: string, amount: number, userRepository: UserRepository, bidRepository: BidRepository) {
+    let users = await bidRepository.listUsers(item)
+    // remove current user
+    users = users.filter(u => u!=user)
+    // email the rest of the users
+    for(let i=0; i <users?.length; i++) {
+        const userEmail = (await userRepository.get(users[i])).email
+        const text = `Another user created a bid on ${item}, with the amount ${amount}$`
+        const subject = "User Created New Bid"
+        emailUser({userEmail, subject, text})
+    }
+}

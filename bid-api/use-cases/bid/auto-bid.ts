@@ -2,6 +2,7 @@ import { Bid, Item, User } from "../../entities/models";
 import UserRepository from "../../entities/repositories/memory/userRepository";
 import BidRepository from "../../entities/repositories/mongo/bidRepository";
 import ItemRepository from "../../entities/repositories/mongo/itemRepository";
+import { emailUser } from "../email";
 
 interface autoBidArgs {
     userRepository: UserRepository;
@@ -24,6 +25,7 @@ const makeAutoBid = ({
         for (let _user of users) {
             if (_user.autoBid.amount <= 0 ) {
                 addNotification(_user, "Amount is not sufficient to continue auto bid")
+                sendEmail(_user.email, item)
                 userRepository.update(_user.username, _user)
                 continue
             }
@@ -37,6 +39,7 @@ const makeAutoBid = ({
                 if (bidCreated && bidCreated.acknowledged) {
                     await updateDb(itemRepository, item, _item, amount, _bid,
                                    bidRepository, bidCreated, userRepository, _user);
+                    emailUsers(_user.username, _item.name, amount+1, userRepository, bidRepository)
                 } else 
                     console.log("Server could not create an auto bid");
             }
@@ -84,3 +87,21 @@ function addNotification(_user: User, notification: string) {
         _user.notifications = [notification];
 }
 
+function sendEmail(userEmail: string, itemName: string) {
+    const text = `Auto bid was actived for ${itemName}, but the amount is not sufficient to continue`
+    const subject = "Not Enough Auto Bid Amount"
+    emailUser({userEmail, subject, text})
+}
+
+async function emailUsers(user: string, item: string, amount: number, userRepository: UserRepository, bidRepository: BidRepository) {
+    let users = await bidRepository.listUsers(item)
+    // remove current user
+    users = users.filter(u => u!=user)
+    // email the rest of the users
+    for(let i=0; i <users?.length; i++) {
+        const userEmail = (await userRepository.get(users[i])).email
+        const text = `An Auto bid was created on ${item} by another user, with the amount ${amount}$`
+        const subject = "User Created New Auto Bid"
+        emailUser({userEmail, subject, text})
+    }
+}

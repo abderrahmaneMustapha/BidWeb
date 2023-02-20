@@ -37,6 +37,17 @@ class BidRepository implements IBidRepository {
         return result as unknown as Bid[];
     }
 
+    async listUsers(item: string): Promise<string[]> {
+        // this fucntion return a list of bids for a specific item per user
+        // to help us know the list of user who bid on a specific item
+        let find: any = {
+            "item.name": item,
+        };
+        const result = await this._collection
+            ?.distinct("user.username", { $and: [{ "item.name" : item}]})
+        return result as unknown as string[];
+    }
+
     get(id: string): Promise<Bid> {
         throw new Error("Method not implemented.");
     }
