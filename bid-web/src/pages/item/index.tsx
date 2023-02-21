@@ -10,6 +10,7 @@ import {
     useMaxBidMutation,
     useUpdateUserMutation,
 } from "../../redux/queries";
+import BidHistory from "./bidHistory";
 
 const defaultImage = "https://via.placeholder.com/250.png/09f/fff";
 
@@ -230,6 +231,7 @@ const Item = () => {
                                 </div>
                             </div>
                         </div>
+                        <BidHistory />
                     </div>
                 </div>
             </div>
