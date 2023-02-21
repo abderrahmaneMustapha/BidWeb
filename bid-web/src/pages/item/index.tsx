@@ -11,6 +11,8 @@ import {
     useUpdateUserMutation,
 } from "../../redux/queries";
 import BidHistory from "./bidHistory";
+import { socket } from "../../common/confing";
+import { Socket } from "socket.io-client";
 
 const defaultImage = "https://via.placeholder.com/250.png/09f/fff";
 
@@ -20,7 +22,7 @@ const Item = () => {
     const [createBid, { isError, error, isSuccess }] = useCreateBidMutation();
     const [updateUser, { isError: updateError }] = useUpdateUserMutation();
     const [getUser, { isLoading: isLoadingUser }] = useGetUserMutation();
-
+    const [bidCreatedSocket, setBidCreatedSocket] = useState<Socket>();
     const [autoBid, setAutoBid] = useState(false);
 
     const { name } = useParams();
@@ -49,8 +51,10 @@ const Item = () => {
             );
         });
 
+        handleMaxBidSocket();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [getItem, name]);
+    }, [getItem, name, maxBidUser]);
+
     useMemo(() => {
         const close_at = data?.data.close_at;
         const bid_closed = new Date(close_at).getTime() - Date.now() <= 0;
@@ -89,6 +93,19 @@ const Item = () => {
                 setAutoBid(!autoBid);
             }
         });
+    };
+
+    const handleMaxBidSocket = () => {
+        if (!bidCreatedSocket) {
+            const _bidCreatedSocket = socket.on(
+                "bid-created-" + name,
+                (bid: any) => {
+                    setMaxBidUser(bid.user.username);
+                    setBid(bid.amount);
+                }
+            );
+            setBidCreatedSocket(_bidCreatedSocket);
+        }
     };
 
     const handleMessages = () => {
@@ -153,9 +170,13 @@ const Item = () => {
                                             {data?.data.highest_bid}$
                                         </p>
                                     </div>
-                                    <div  hidden={!bidClosed} className="col-md-5 mb-5">
+                                    <div
+                                        hidden={!bidClosed}
+                                        className="col-md-5 mb-5"
+                                    >
                                         <p>
-                                            Winner: <strong>{maxBidUser}</strong>
+                                            Winner:{" "}
+                                            <strong>{maxBidUser}</strong>
                                         </p>
                                     </div>
                                     <div
