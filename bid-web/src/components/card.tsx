@@ -14,16 +14,18 @@ const Card = ({ to, item }: CardProps) => {
             <div className="card-body">
                 <h5 className="card-title">{item.name}</h5>
                 <p className="card-text text-truncate">{item.description}</p>
-                <p className="card-text fw-bold">
-                    <span className="fw-bolder">Highest Bid: </span>
-                    {item.highest_bid < 1 ? 0 : item.highest_bid}$
-                </p>
-                <button
-                    className="btn btn-primary"
-                    onClick={() => navigate(to)}
-                >
-                    Bid now
-                </button>
+                <div className="d-flex flex-wrap align-items-center justify-content-between">
+                    <p className="card-text fw-bold">
+                        <span className="fw-bolder">Highest Bid: </span>
+                        {item.highest_bid < 1 ? 0 : item.highest_bid}$
+                    </p>
+                    <button
+                        className="btn btn-primary"
+                        onClick={() => navigate(to)}
+                    >
+                        Bid now
+                    </button>
+                </div>
             </div>
         </div>
     );

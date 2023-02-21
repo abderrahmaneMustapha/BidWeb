@@ -4,6 +4,7 @@ import { getUserFromStorage, removeUserFromStorage } from "../common/auth";
 import ConfigIcon from "../icons/config";
 import DashboardIcon from "../icons/dashboard";
 import NotificationsIcon from "../icons/notifications";
+import UserIcon from "../icons/user";
 import AutoBidModal from "./autoBidModal";
 
 const NavBar = () => {
@@ -26,6 +27,13 @@ const NavBar = () => {
                     <div className="d-flex flex-row">
                         {isLogin && (
                             <>
+                                <button
+                                    title="Profile"
+                                    className="btn btn-light"
+                                    onClick={() => navigate("/profile")}
+                                >
+                                    <UserIcon />
+                                </button>
                                 <button
                                     title="Configure auto bid"
                                     className="btn btn-light"

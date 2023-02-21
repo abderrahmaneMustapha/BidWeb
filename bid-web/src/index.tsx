@@ -19,6 +19,7 @@ import Login from "./pages/auth";
 import ProtectedRoute from "./components/protectedRoute";
 import AdminRoute from "./components/adminRoute";
 import Notifications from "./pages/notifications";
+import Profile from "./pages/profile";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -44,6 +45,14 @@ const router = createBrowserRouter([
                 <Item />
             </ProtectedRoute>
         ),
+    },
+    {
+        path: "/profile",
+        element: (
+            <ProtectedRoute>
+                <Profile />
+            </ProtectedRoute>
+        )
     },
     {
         path: "/notifications",

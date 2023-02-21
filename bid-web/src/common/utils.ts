@@ -1,4 +1,5 @@
 const resizeImage = (image:string, width: number = 400, height: number = 270) => {
+  if (!image) return undefined;
   let imgArr =  image.split('/')
   const last = imgArr.pop()
   imgArr.pop()

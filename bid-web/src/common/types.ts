@@ -1,3 +1,4 @@
+/* Types */
 interface ItemFormValues {
     name: string;
     close_at: string;
@@ -27,6 +28,8 @@ interface User {
     updated_at: number;
     autoBid: AutoBid;
 }
+
+/*  Props */
 interface CardProps {
     to: string;
     item: Item;
@@ -60,6 +63,11 @@ interface PaginationProps {
     pageSize: number;
 }
 
+interface handleBillProps {
+    data: any;
+    handleBill: (itemBill: any) => void
+}
+
 export type {
     ItemFormProps,
     ItemFormValues,
@@ -70,4 +78,5 @@ export type {
     CardProps,
     Item,
     User,
+    handleBillProps
 };
