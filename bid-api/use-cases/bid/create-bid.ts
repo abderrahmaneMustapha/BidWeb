@@ -13,7 +13,7 @@ interface createBidArgs {
 }
 
 const makeCreateBid = ({ bidRepository, itemRepository, userRepository, eventEmitter }: createBidArgs) => {
-    return async function createBid({ body, user }: any) {
+    return async function createBid({ body, user, socket }: any) {
         let { amount, item } = body;
         user = user as User;
         let _bid = new Bid(parseInt(amount),user,item,Date.now(),Date.now());
@@ -24,7 +24,8 @@ const makeCreateBid = ({ bidRepository, itemRepository, userRepository, eventEmi
             await updateDb(itemRepository, item, amount, _bid, _item, bidRepository, bidCreated);
             sendEmail(user.email, item.name, Number(amount))
             emailUsers(user.username, item.name, amount, userRepository, bidRepository)
-            emitEvent(item.name, user.username, eventEmitter)
+            socket.emit('bid-created-'+_item.name, _bid)
+            emitEvent(item.name, user.username, eventEmitter, socket)
         } else {
             throw new Error("Server could not create a bid");
         }
@@ -69,8 +70,8 @@ async function updateDb(
     await bidRepository.update(bidCreated.insertedIn, _bid);
 }
 
-function emitEvent(itemName: string, username: string, eventEmitter: EventEmitter) {
-    eventEmitter.emit('auto-bid', {item: itemName, user: username})
+function emitEvent(itemName: string, username: string, eventEmitter: EventEmitter, socket: any) {
+    eventEmitter.emit('auto-bid', {item: itemName, user: username, socket})
 }
 
 function sendEmail(userEmail: string, itemName: string, amount: number) {

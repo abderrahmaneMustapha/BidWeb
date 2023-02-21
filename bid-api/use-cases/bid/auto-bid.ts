@@ -13,6 +13,7 @@ interface autoBidArgs {
 interface innerAutoBidArgs {
     user: string;
     item: string;
+    socket:any;
 }
 
 const makeAutoBid = ({
@@ -20,7 +21,7 @@ const makeAutoBid = ({
     bidRepository,
     itemRepository,
 }: autoBidArgs) => {
-    return async function autoBid({ user, item }: innerAutoBidArgs) {
+    return async function autoBid({ user, item, socket }: innerAutoBidArgs) {
         const users = await userRepository.list(0, 0, item, {});
         for (let _user of users) {
             if (_user.autoBid.amount <= 0 ) {
@@ -40,6 +41,7 @@ const makeAutoBid = ({
                     await updateDb(itemRepository, item, _item, amount, _bid,
                                    bidRepository, bidCreated, userRepository, _user);
                     emailUsers(_user.username, _item.name, amount+1, userRepository, bidRepository)
+                    socket.emit('bid-created-'+_item.name, _bid)
                 } else 
                     console.log("Server could not create an auto bid");
             }

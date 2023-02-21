@@ -7,7 +7,6 @@ interface listItemArgs {
 const makeListItem = ({ itemRepository }: listItemArgs) => {
     return async function listItem({ query }: any) {
         const { limit, skip, search, sort, open, bidSort } = query;
-        
         const result = await itemRepository.list(
             parseInt(limit),
             parseInt(skip),

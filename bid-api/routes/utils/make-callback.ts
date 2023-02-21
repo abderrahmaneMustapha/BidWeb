@@ -9,6 +9,7 @@ export default (controller: any) => (req: any, res: any) => {
     path: req.path,
     user: req.user,
     logger: req.logger,
+    socket: req.app.get('socket'),
     source: {
       ip: req.ip,
       browser: req.get('User-Agent')
