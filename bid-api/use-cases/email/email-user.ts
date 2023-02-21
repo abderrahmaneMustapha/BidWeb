@@ -6,7 +6,7 @@ interface makeEmailUserArgs {
 }
 
 interface emailUserArgs {
-  userEmail: string;
+  userEmail: string | string[];
   subject: string;
   text: string;
 }

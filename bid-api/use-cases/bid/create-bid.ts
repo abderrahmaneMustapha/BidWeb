@@ -84,10 +84,12 @@ async function emailUsers(user: string, item: string, amount: number, userReposi
     // remove current user
     users = users.filter(u => u!=user)
     // email the rest of the users
+    let usersEmails: string[] = []
     for(let i=0; i <users?.length; i++) {
         const userEmail = (await userRepository.get(users[i])).email
-        const text = `Another user created a bid on ${item}, with the amount ${amount}$`
-        const subject = "User Created New Bid"
-        emailUser({userEmail, subject, text})
+        usersEmails.push(userEmail)
     }
+    const text = `Another user created a bid on ${item}, with the amount ${amount}$`
+    const subject = "User Created New Bid"
+    emailUser({userEmail: usersEmails, subject, text})
 }
