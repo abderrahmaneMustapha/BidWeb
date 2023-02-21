@@ -40,11 +40,17 @@ class BidRepository implements IBidRepository {
     async listUsers(item: string): Promise<string[]> {
         // this fucntion return a list of bids for a specific item per user
         // to help us know the list of user who bid on a specific item
-        let find: any = {
-            "item.name": item,
-        };
-        const result = await this._collection
-            ?.distinct("user.username", { $and: [{ "item.name" : item}]})
+        const result = await this._collection?.distinct("user.username", {
+            $and: [{ "item.name": item }],
+        });
+        return result as unknown as string[];
+    }
+
+    async userItems(user: string): Promise<string[]> {
+        const result = await this._collection?.distinct("item.name", {
+            $and: [{ "user.username": user }],
+        });
+
         return result as unknown as string[];
     }
 
@@ -52,9 +58,13 @@ class BidRepository implements IBidRepository {
         throw new Error("Method not implemented.");
     }
 
-    async getMax(name: string): Promise<Bid> {
+    async getMax(name: string, filter?: any): Promise<Bid> {
+        let find = { "item.name": name }
+        if( filter) {
+            find = {...find,...filter}
+        }
         const result = await this._collection
-            ?.find({ "item.name": name })
+            ?.find(find)
             .sort({ amount: -1 })
             .limit(1)
             .toArray();

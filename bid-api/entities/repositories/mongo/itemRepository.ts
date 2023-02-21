@@ -26,6 +26,7 @@ class ItemRepository implements IItemRepository {
         if (result) return result;
         return 0;
     }
+
     async list(
         limit: number,
         skip: number,
@@ -41,18 +42,22 @@ class ItemRepository implements IItemRepository {
             ?.find(
                 {
                     $or: [
-                        { description: { $regex: search } },
-                        { name: { $regex: search } },
+                        { description: { $regex: search } }, { name: { $regex: search } }
                     ],
                     ...openFilter,
-                },
-                { limit: limit, skip: skip }
+                }, { limit: limit, skip: skip }
             )
             .sort(sortFilter)
             .toArray();
         return result as unknown as Item[];
     }
 
+    async items(): Promise<string[]> {
+        const result = await this._collection?.distinct("name");
+
+        return result as unknown as string[];
+    }
+    
     async get(id: string): Promise<Item> {
         const result = await this._collection?.findOne({ name: id });
         return result as unknown as Item;
@@ -85,21 +90,13 @@ class ItemRepository implements IItemRepository {
             close_at: entity.close_at,
             updated_at: entity.updated_at,
         };
-
         if (entity.highest_bid > 0) {
             updateEntity = { ...updateEntity, highest_bid: entity.highest_bid };
         }
-
         try {
             const result = await this._collection?.updateOne(
-                { name: id },
-                {
-                    $set: {
-                        ...updateEntity,
-                    },
-                }
+                { name: id }, {$set: {...updateEntity,}}
             );
-
             return !!result?.modifiedCount;
         } catch (error: unknown) {
             handleErrors(error, "Validation error could not update the item");

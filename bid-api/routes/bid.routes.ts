@@ -8,5 +8,5 @@ const router = express.Router();
 router.post('/bid', makeAuth(authUser), makeHttpCallback(controller.createBid))
 router.get('/bid', makeAuth(authUser), makeHttpCallback(controller.listBid))
 router.get('/bid/:name/max', makeAuth(authUser), makeHttpCallback(controller.highestBid))
-
+router.get('/bid/user', makeAuth(authUser), makeHttpCallback(controller.userItems))
 export default router

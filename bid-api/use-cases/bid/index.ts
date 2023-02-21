@@ -8,6 +8,7 @@ import UserRepository from "../../entities/repositories/memory/userRepository";
 import makeAutoBid from "./auto-bid";
 import makeWonBid from "./won-bid";
 import makeHighestBid from "./highest-bid";
+import makeUserItems from "./user-items";
 
 const userRepository = new UserRepository();
 const bidRepository = new BidRepository(db);
@@ -24,6 +25,7 @@ const listBid = makeListBid({ bidRepository });
 const autoBid = makeAutoBid({ userRepository, bidRepository, itemRepository });
 const wonBid = makeWonBid({ bidRepository, itemRepository, userRepository});
 const highestBid = makeHighestBid({bidRepository})
+const userItems = makeUserItems({bidRepository, itemRepository})
 
 export default Object.freeze({
     createBid,
@@ -31,7 +33,8 @@ export default Object.freeze({
     autoBid,
     wonBid,
     highestBid,
+    userItems,
     eventEmitter,
 });
 
-export { createBid, listBid, autoBid, wonBid, eventEmitter, highestBid };
+export { createBid, listBid, autoBid, wonBid, eventEmitter, highestBid, userItems };
