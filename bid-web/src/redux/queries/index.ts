@@ -100,6 +100,17 @@ export const bidApi = createApi({
                 };
             },
         }),
+        registerUser: builder.mutation({
+            query(data) {
+                return {
+                    url: "/register",
+                    method: "POST",
+                    body: {
+                        ...data,
+                    },
+                };
+            },
+        }),
         updateUser: builder.mutation({
             query(data) {
                 return {
@@ -155,6 +166,7 @@ export const {
     useMaxBidMutation,
     useUserItemsMutation,
     useAuthUserMutation,
+    useRegisterUserMutation,
     useUpdateUserMutation,
     useGetUserMutation,
     useCreateImageMutation,

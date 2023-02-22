@@ -15,11 +15,12 @@ import Admin from "./pages/admin";
 import ItemEdit from "./pages/admin/itemEdit";
 import ItemCreate from "./pages/admin/itemCreate";
 import BidHistory from "./pages/admin/bidHistory";
-import Login from "./pages/auth";
+import Login from "./pages/auth/login";
 import ProtectedRoute from "./components/protectedRoute";
 import AdminRoute from "./components/adminRoute";
 import Notifications from "./pages/notifications";
 import Profile from "./pages/profile";
+import Register from "./pages/auth/register";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login />,
+    },
+    {
+        path: "/register",
+        element: <Register />,
     },
     {
         path: "/bid/:name",
