@@ -1,4 +1,4 @@
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 
 interface getUserArgs {
     userRepository: UserRepository;
@@ -6,8 +6,8 @@ interface getUserArgs {
 
 const makeNotifyUser = ({ userRepository }: getUserArgs) => {
     return async function notifyUser({ user }: any) {
-        
-        return  await userRepository.removeNotfications(user.username);
+        const res =  await userRepository.get(user.username)
+        return res?.notifications ;
     };
 };
 

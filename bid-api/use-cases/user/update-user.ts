@@ -1,5 +1,5 @@
 import { User } from "../../entities/models";
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 
 interface updateUserArgs {
     userRepository: UserRepository;

@@ -1,4 +1,4 @@
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 
 interface getUserArgs {
     userRepository: UserRepository;

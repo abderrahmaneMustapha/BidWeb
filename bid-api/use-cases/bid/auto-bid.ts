@@ -1,5 +1,5 @@
 import { Bid, Item, User } from "../../entities/models";
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 import BidRepository from "../../entities/repositories/mongo/bidRepository";
 import ItemRepository from "../../entities/repositories/mongo/itemRepository";
 import { emailUser } from "../email";
@@ -84,7 +84,7 @@ function percentageNotification(_user: User) {
 
 function addNotification(_user: User, notification: string) {
     if (_user.notifications)
-        _user.notifications.push(notification);
+        _user.notifications.unshift(notification);
     else
         _user.notifications = [notification];
 }

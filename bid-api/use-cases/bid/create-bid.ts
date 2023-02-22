@@ -3,7 +3,7 @@ import BidRepository from "../../entities/repositories/mongo/bidRepository";
 import ItemRepository from "../../entities/repositories/mongo/itemRepository";
 import { EventEmitter } from "node:events";
 import { emailUser } from "../email";
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 
 interface createBidArgs {
     bidRepository: BidRepository;

@@ -1,4 +1,5 @@
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
+import bcrypt from "bcrypt";
 
 interface loginUserArgs {
     userRepository: UserRepository;
@@ -7,13 +8,11 @@ interface loginUserArgs {
 const makeLoginUser = ({ userRepository }: loginUserArgs) => {
     return async function loginUser({ body}: any) {
         const { username, password } = body
-        const validate = await userRepository.validate(username, password);
-
+        const user = await userRepository.get(username);
+        const validate = await bcrypt.compare(password, user.password)
         if (!validate) {
            throw new Error("Authentication error, wrong credentials");
         }
-
-        const user = await userRepository.get(username);
         return user
     };
 };

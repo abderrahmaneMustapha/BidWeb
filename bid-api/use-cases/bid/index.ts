@@ -4,13 +4,13 @@ import ItemRepository from "../../entities/repositories/mongo/itemRepository";
 import db from "../../entities/repositories/mongo/utils/mongoConnection";
 import makeCreateBid from "./create-bid";
 import makeListBid from "./list-bid";
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 import makeAutoBid from "./auto-bid";
 import makeWonBid from "./won-bid";
 import makeHighestBid from "./highest-bid";
 import makeUserItems from "./user-items";
 
-const userRepository = new UserRepository();
+const userRepository = new UserRepository(db);
 const bidRepository = new BidRepository(db);
 const itemRepository = new ItemRepository(db);
 const eventEmitter = new EventEmitter();

@@ -1,4 +1,4 @@
-import UserRepository from "../../entities/repositories/memory/userRepository";
+import UserRepository from "../../entities/repositories/mongo/userRepository";
 
 interface authUserArgs {
     userRepository: UserRepository;
@@ -13,12 +13,10 @@ const makeAuthUser = ({ userRepository }: authUserArgs) => {
     return async function authUser({
         username, password
     }: authArgs) {
-        const validate = await userRepository.validate(username, password);
-        if (!validate) {
+        const user = await userRepository.get(username);
+        if (!(user?.password === password)) {
             throw new Error("Authentication error, wrong credentials");
         }
-
-        const user = await userRepository.get(username);
         return user;
     };
 };
