@@ -20,7 +20,7 @@ const makeWonBid = ({
     itemRepository,
     userRepository,
 }: makeWonBidArgs) => {
-    return async function hgihestBid({ maxTime, minTime }: wonBidArgs) {
+    return async function wonBid({ maxTime, minTime }: wonBidArgs) {
         const items = await itemRepository.list(0, 0, "", { maxTime, minTime });
         for (let i = 0; i < items?.length; i++) {
             const bid = await bidRepository.getMax(items[i].name);

@@ -17,16 +17,20 @@ import { Socket } from "socket.io-client";
 const defaultImage = "https://via.placeholder.com/250.png/09f/fff";
 
 const Item = () => {
-    const [getItem, { data, isLoading }] = useGetItemMutation();
+    
+    const { name } = useParams();
+    const navigate = useNavigate();
+
+    const [getItem, { isLoading }] = useGetItemMutation();
     const [getMaxBid] = useMaxBidMutation();
     const [createBid, { isError, error, isSuccess }] = useCreateBidMutation();
     const [updateUser, { isError: updateError }] = useUpdateUserMutation();
     const [getUser, { isLoading: isLoadingUser }] = useGetUserMutation();
     const [bidCreatedSocket, setBidCreatedSocket] = useState<Socket>();
-    const [autoBid, setAutoBid] = useState(false);
+    const [itemDetailsSocket, setItemDetailsSocket] = useState<Socket>();
 
-    const { name } = useParams();
-    const navigate = useNavigate();
+    const [item, setItem] = useState<any | undefined>(undefined);
+    const [autoBid, setAutoBid] = useState(false);
     const [counter, setCounter] = useState(0);
     const [counterTimeOut, setCounterTimeOut] = useState<
         NodeJS.Timeout | number | string | undefined
@@ -36,7 +40,11 @@ const Item = () => {
     const [maxBidUser, setMaxBidUser] = useState<string>("");
 
     useEffect(() => {
-        getItem({ name });
+        getItem({ name }).then((data: any) => {
+            if (data.data) setItem(data.data?.data);
+            else setItem(undefined);
+        });
+
         getMaxBid({ name }).then((bid: any) => {
             setBid(bid.data?.data.amount < 1 ? 1 : bid.data?.data.amount + 1);
             setMaxBidUser(
@@ -51,12 +59,13 @@ const Item = () => {
             );
         });
 
+        handleItemDetailsSocket();
         handleMaxBidSocket();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [getItem, name, maxBidUser]);
 
     useMemo(() => {
-        const close_at = data?.data.close_at;
+        const close_at = item?.close_at;
         const bid_closed = new Date(close_at).getTime() - Date.now() <= 0;
         setBidClosed(bid_closed);
         if (close_at && !bid_closed) {
@@ -72,12 +81,16 @@ const Item = () => {
             clearTimeout(counterTimeOut);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [data?.data.close_at, counter]);
+    }, [item?.close_at, counter]);
+
+    const goToHome = () => {
+        navigate("/");
+    };
 
     const handleBid = () => {
         createBid({
             amount: bid,
-            item: data?.data,
+            item: item,
         }).then((_bid: any) => {
             if (_bid.data.success) {
                 setTimeout(() => {
@@ -85,6 +98,10 @@ const Item = () => {
                 }, 2000);
             }
         });
+    };
+
+    const handleBidChange = (event: any) => {
+        setBid(Number(event.target.value));
     };
 
     const handleAutoBidChange = () => {
@@ -108,32 +125,40 @@ const Item = () => {
         }
     };
 
+    const handleItemDetailsSocket = () => {
+        if (!itemDetailsSocket) {
+            const _itemDetailsSocket = socket.on(
+                "item-updated-" + name,
+                (item: any) => {
+                    console.log(item);
+                    setItem(item);
+                }
+            );
+            setItemDetailsSocket(_itemDetailsSocket);
+        }
+    };
+
     const handleMessages = () => {
         if (updateError)
             return (
-                <Alert
-                    type="danger"
-                    message="Item could not be set to auto bid"
+                <Alert type="danger" message="Item could not be set to auto bid"
                 ></Alert>
             );
         if (isError)
             return (
-                <Alert
-                    type="danger"
-                    message={(error as any).data?.error.description}
+                <Alert type="danger" message={(error as any).data?.error.description}
                 ></Alert>
             );
 
         if (isSuccess)
             return (
-                <Alert
-                    type="success"
-                    message="Bid successfully created"
+                <Alert type="success" message="Bid successfully created"
                 ></Alert>
             );
     };
 
     if (isLoading || isLoadingUser) return <div> Loading ...</div>;
+    
     return (
         <DefaultLayout>
             <div className="container h-100">
@@ -141,116 +166,21 @@ const Item = () => {
                 <div className="card my-5 h-75 border-0">
                     <div className="row g-0">
                         <div className="col-md-5 col-sm-12">
-                            <div className="p-md-3">
-                                <img
-                                    src={resizeImage(
-                                        data?.data.image || defaultImage,
-                                        350,
-                                        350
-                                    )}
-                                    className="w-100 d-block rounded"
-                                    alt={data?.data.name}
-                                />
-                            </div>
+                            <ItemImage item={item} />
                         </div>
                         <div className="col-md-7 col-sm-12">
-                            <div className="card-body">
-                                <h5 className="card-title">
-                                    {data?.data.name}
-                                </h5>
-                                <p className="card-text mb-4">
-                                    {data?.data.description}
-                                </p>
-                                <div className="row align-items-center">
-                                    <div className="col-md-5 mb-5">
-                                        <p className="fw-bold">
-                                            <strong className="fw-bolder">
-                                                Highest Bid:
-                                            </strong>
-                                            {data?.data.highest_bid}$
-                                        </p>
-                                    </div>
-                                    <div
-                                        hidden={!bidClosed}
-                                        className="col-md-5 mb-5"
-                                    >
-                                        <p>
-                                            Winner:{" "}
-                                            <strong>{maxBidUser}</strong>
-                                        </p>
-                                    </div>
-                                    <div
-                                        hidden={bidClosed}
-                                        className="col-md-5 mb-5"
-                                    >
-                                        <div className="input-group float-end">
-                                            <span className="input-group-text">
-                                                $
-                                            </span>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                aria-label="Text input"
-                                                disabled={bidClosed}
-                                                value={bid}
-                                                onChange={(event) => {
-                                                    setBid(
-                                                        Number(
-                                                            event.target.value
-                                                        )
-                                                    );
-                                                }}
-                                            />
-                                            <button
-                                                type="button"
-                                                className="btn btn-outline-secondary"
-                                                disabled={bidClosed}
-                                                onClick={handleBid}
-                                            >
-                                                Place a bid
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div
-                                        hidden={bidClosed}
-                                        className="col-md-5 mb-5"
-                                    >
-                                        <div className="form-check form-switch float-start">
-                                            <input
-                                                className="form-check-input"
-                                                type="checkbox"
-                                                role="switch"
-                                                checked={autoBid}
-                                                disabled={bidClosed}
-                                                onChange={handleAutoBidChange}
-                                            />
-                                            <label className="form-check-label">
-                                                Activate auto bid
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div
-                                        hidden={bidClosed}
-                                        className="col-md-5 mb-5"
-                                    >
-                                        <p>
-                                            <strong>
-                                                {countToDate(counter)}
-                                            </strong>
-                                        </p>
-                                    </div>
-                                    <div className="col-md-5 offset-md-5 mb-3">
-                                        <button
-                                            className="btn btn-dark float-end"
-                                            onClick={() => {
-                                                navigate("/");
-                                            }}
-                                        >
-                                            Leave
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                            <ItemDetails
+                                item={item}
+                                bidClosed={bidClosed}
+                                maxBidUser={maxBidUser}
+                                bid={bid}
+                                handleBidChange={handleBidChange}
+                                handleBid={handleBid}
+                                autoBid={autoBid}
+                                handleAutoBidChange={handleAutoBidChange}
+                                counter={counter}
+                                goToHome={goToHome}
+                            />
                         </div>
                         <BidHistory />
                     </div>
@@ -259,6 +189,115 @@ const Item = () => {
         </DefaultLayout>
     );
 };
+
+export default Item;
+
+interface ItemDetailsProps {
+    item: any;
+    bidClosed: boolean;
+    maxBidUser: string;
+    bid: number;
+    handleBidChange: (event: any) => void;
+    handleBid: () => void;
+    autoBid: boolean;
+    handleAutoBidChange: () => void;
+    counter: number;
+    goToHome: () => void;
+}
+
+function ItemDetails({
+    item,
+    bidClosed,
+    maxBidUser,
+    bid,
+    handleBidChange,
+    handleBid,
+    autoBid,
+    handleAutoBidChange,
+    counter,
+    goToHome,
+}: ItemDetailsProps) {
+    return (
+        <div className="card-body">
+            <h5 className="card-title">{item?.name}</h5>
+            <p className="card-text mb-4">{item?.description}</p>
+            <div className="row align-items-center">
+                <div className="col-md-5 mb-5">
+                    <p className="fw-bold">
+                        <strong className="fw-bolder">Highest Bid:</strong>
+                        {item?.highest_bid}$
+                    </p>
+                </div>
+                <div hidden={!bidClosed} className="col-md-5 mb-5">
+                    <p>
+                        Winner: <strong>{maxBidUser}</strong>
+                    </p>
+                </div>
+                <div hidden={bidClosed} className="col-md-5 mb-5">
+                    <div className="input-group float-end">
+                        <span className="input-group-text">$</span>
+                        <input
+                            type="number"
+                            className="form-control"
+                            aria-label="Text input"
+                            disabled={bidClosed}
+                            value={bid}
+                            onChange={handleBidChange}
+                        />
+                        <button
+                            type="button"
+                            className="btn btn-outline-secondary"
+                            disabled={bidClosed}
+                            onClick={handleBid}
+                        >
+                            Place a bid
+                        </button>
+                    </div>
+                </div>
+                <div hidden={bidClosed} className="col-md-5 mb-5">
+                    <div className="form-check form-switch float-start">
+                        <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            checked={autoBid}
+                            disabled={bidClosed}
+                            onChange={handleAutoBidChange}
+                        />
+                        <label className="form-check-label">
+                            Activate auto bid
+                        </label>
+                    </div>
+                </div>
+                <div hidden={bidClosed} className="col-md-5 mb-5">
+                    <p>
+                        <strong>{countToDate(counter)}</strong>
+                    </p>
+                </div>
+                <div className="col-md-5 offset-md-5 mb-3">
+                    <button
+                        className="btn btn-dark float-end"
+                        onClick={goToHome}
+                    >
+                        Leave
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function ItemImage({ item }: any) {
+    return (
+        <div className="p-md-3">
+            <img
+                src={resizeImage(item?.image, 350, 350) || defaultImage}
+                className="w-100 d-block rounded"
+                alt={item?.name}
+            />
+        </div>
+    );
+}
 
 const countToDate = (count: number) => {
     const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -274,5 +313,3 @@ const countToDate = (count: number) => {
     const SECONDS = Math.floor(count / MS_PER_SECONDS);
     return `${DAYS} days ${HOURS}h: ${MINUTES}m: ${SECONDS}s`;
 };
-
-export default Item;
