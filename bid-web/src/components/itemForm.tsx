@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ItemFormProps, ItemFormValues } from "../common/types";
 import { useCreateImageMutation } from "../redux/queries";
@@ -15,17 +15,23 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
         description: "",
     });
 
+    const [image, setImage] = useState<string>("")
+
     useEffect(() => {
-        if (item) setInputs(item as unknown as ItemFormValues);
+        if (item) {
+            setInputs(item as unknown as ItemFormValues);
+            setImage(item.image)
+        }
     }, [item]);
 
     const handleInputChange = (input: string, value: string) => {
         setInputs({ ...inputs, [input]: value });
     };
 
-    const handleSumbit = (event: FormEvent<HTMLFormElement>) => {
+    const handleSumbit = (event: any) => {
         event.preventDefault();
-        onSubmit(inputs);
+        setInputs({ name: inputs.name, close_at: inputs.close_at,  description: inputs.description, image: image})
+        onSubmit({ name: inputs.name, close_at: inputs.close_at,  description: inputs.description, image: image});
     };
 
     const onImageUpload = (event: ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +39,7 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
         reader.onloadend = async () => {
             let image = reader.result as string;
             createImage(image).then(({ data }: any) => {
-                setInputs({ ...inputs, image: data?.data?.secure_url });
+                setImage(data?.data?.secure_url);
             }).catch((error) => {
                 console.log(error)
             });
@@ -45,7 +51,6 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
         <form
             className="row g-3 needs-validation"
             name="item-form"
-            onSubmit={handleSumbit}
         >
             <div className="col-md-6">
                 <label className="form-label">Name</label>
@@ -82,8 +87,8 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
                     }}
                     accept="image/*"
                 />
-                {(inputs.image && !isLoading) && (
-                    <a href={inputs.image} target={"_blank"} rel="noreferrer">
+                {(image && !isLoading) && (
+                    <a href={image} target={"_blank"} rel="noreferrer">
                         uploaded image url
                     </a>
                 )}
@@ -118,7 +123,8 @@ const ItemForm = ({ onSubmit, leave, item, action }: ItemFormProps) => {
                 <button
                     type="submit"
                     className="btn btn-primary"
-                    disabled={!inputs.image}
+                    disabled={!image || !inputs.close_at || !inputs.description || !inputs.name}
+                    onClick={handleSumbit}
                 >
                     Save
                 </button>
