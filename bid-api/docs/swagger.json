@@ -1,0 +1,1359 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Bid Web API",
+    "description": "Description",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "BasicAuth": {
+      "type": "basic"
+    }
+  },
+  "paths": {
+    "/bid": {
+      "post": {
+        "tags": [
+          "Bid"
+        ],
+        "summary": "Create a new bid",
+        "description": "",
+        "parameters": [
+          {
+            "name": "amount",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "The amount of the bid to be created"
+          },
+          {
+            "name": "item",
+            "in": "body",
+            "required": true,
+            "description": "The item which the bid is created for",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "example": "item name"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bid is created successfully",
+            "schema": {
+              "$ref": "#/definitions/ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Bid"
+        ],
+        "summary": "Get a list of bid",
+        "description": "",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "The limit of the item that should be fetched from the server"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "The number of items that we should skip them and not fetching them"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the item that we should fetch bids for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bid is created successfully",
+            "schema": {
+              "$ref": "#/definitions/bidListSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/bid/{name}/max": {
+      "get": {
+        "tags": [
+          "Bid"
+        ],
+        "summary": "Get the max bid for an item",
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the item that we should fetch the highest bid for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bid is created successfully",
+            "schema": {
+              "$ref": "#/definitions/getBidSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/bid/user": {
+      "get": {
+        "tags": [
+          "Bid"
+        ],
+        "summary": "Get the items that a user has bid on, in addition to the  state of the item and the maximum bid in this specific item",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "list of items that the user has bid on in addition to the state of the item to show to the user wehter he won this sepecifc item or not",
+            "schema": {
+              "$ref": "#/definitions/getUserBidListSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/image": {
+      "post": {
+        "tags": [
+          "Image"
+        ],
+        "summary": "Create a new image this image is gonna be assigned to an item when created or updated",
+        "description": "",
+        "parameters": [
+          {
+            "name": "image",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The image is sent to the server as a blob of data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Image is created successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "success": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "code": {
+                  "type": "number",
+                  "example": 200
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "public_id": {
+                      "type": "string",
+                      "example": "image public id"
+                    },
+                    "secure_url": {
+                      "type": "string",
+                      "example": "image https secure url"
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": [
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/item": {
+      "post": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Create a new item",
+        "description": "",
+        "parameters": [
+          {
+            "name": "item",
+            "in": "body",
+            "required": true,
+            "description": "The new item that we want to create",
+            "schema": {
+              "$ref": "#/components/schemas/ItemCreate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item is created successfully",
+            "schema": {
+              "$ref": "#/definitions/ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": [
+              "admin"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Get a list of items",
+        "description": "",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "The limit of the item that should be fetched from the server"
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "description": "The number of items that we should skip them and not fetching them"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    -1
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "default": {
+                  "type": "number",
+                  "example": -1
+                }
+              }
+            },
+            "description": "Sort items by creation date in ascending or descending order"
+          },
+          {
+            "name": "open",
+            "in": "query",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    -1,
+                    0
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "default": {
+                  "type": "number",
+                  "example": 0
+                }
+              }
+            },
+            "description": "get open to bid items or closed ones or both of them"
+          },
+          {
+            "name": "bidSort",
+            "in": "query",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "example": "number"
+                },
+                "enum": {
+                  "type": "array",
+                  "example": [
+                    1,
+                    -1,
+                    0
+                  ],
+                  "items": {
+                    "type": "number"
+                  }
+                },
+                "default": {
+                  "type": "number",
+                  "example": 0
+                }
+              }
+            },
+            "description": "Sort items by highest bid amount in ascending or descending order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Items fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/itemListSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/item/{name}": {
+      "get": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Get an item by name",
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the item to retrieve"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/getItemSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Delete an item",
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the item to delete",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item is deleted successfully",
+            "schema": {
+              "$ref": "#/definitions/ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": [
+              "admin"
+            ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Item"
+        ],
+        "summary": "Update an item",
+        "description": "",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The name of the item to update",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "item",
+            "in": "body",
+            "required": true,
+            "description": "The properties to update in the item",
+            "schema": {
+              "$ref": "#/components/schemas/ItemUpdate"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item is updated successfully",
+            "schema": {
+              "$ref": "#/definitions/ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": [
+              "admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/auth": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Login user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "body",
+            "required": true,
+            "description": "Username",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "required": true,
+            "description": "user account password",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User login successfully",
+            "schema": {
+              "$ref": "#/definitions/ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Register a new user",
+        "description": "",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "body",
+            "required": true,
+            "description": "Username",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "body",
+            "required": true,
+            "description": "User email",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "required": true,
+            "description": "user account password",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User registred successfully",
+            "schema": {
+              "$ref": "#/definitions/userRegisteredSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/user": {
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update the current authenticated user, activate or deactivate the autobid for a specified item, and update auto bid parameters",
+        "description": "",
+        "parameters": [
+          {
+            "name": "item",
+            "in": "body",
+            "description": "the item to activate auto bid for",
+            "schema": {
+              "$ref": "#/components/schemas/Item"
+            }
+          },
+          {
+            "name": "percentage",
+            "in": "body",
+            "description": "the percentage to worn the user when the auto bid amount get to it",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "initialAmount",
+            "in": "body",
+            "description": "Set the a new total initial amount for auto bid to use",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User updated successfully",
+            "schema": {
+              "$ref": "#/definitions/ResponseSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get the current authenticated user",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/userRegisteredSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    },
+    "/user/notifications": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get the current authenticated user notifications",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "User fetched successfully",
+            "schema": {
+              "$ref": "#/definitions/notificationsSuccess"
+            }
+          },
+          "400": {
+            "description": "Request failed because of a bad request",
+            "schema": {
+              "$ref": "#/definitions/badRequest"
+            }
+          },
+          "401": {
+            "description": "Unauthorized request",
+            "schema": {
+              "$ref": "#/definitions/unAuthorized"
+            }
+          }
+        },
+        "security": [
+          {
+            "BasicAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "bidListSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/Bids"
+        }
+      }
+    },
+    "getUserBidListSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/StateBids"
+        }
+      }
+    },
+    "getBidSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/Bid"
+        }
+      }
+    },
+    "itemListSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/Items"
+        }
+      }
+    },
+    "getItemSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/ItemMiliseconds"
+        }
+      }
+    },
+    "userRegisteredSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/UserMiliseconds"
+        }
+      }
+    },
+    "notificationsSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "$ref": "#/components/schemas/Notifications"
+        }
+      }
+    },
+    "unAuthorized": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": false
+        },
+        "code": {
+          "type": "number",
+          "example": 401
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "example": "error message"
+            }
+          }
+        }
+      }
+    },
+    "badRequest": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": false
+        },
+        "code": {
+          "type": "number",
+          "example": 400
+        },
+        "error": {
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "example": "error message"
+            }
+          }
+        }
+      }
+    },
+    "ResponseSuccess": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "example": true
+        },
+        "code": {
+          "type": "number",
+          "example": 200
+        },
+        "data": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Bid": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The amount of the bid to be created."
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "item": {
+            "$ref": "#/components/schemas/Item"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The creation date and time of the bid"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the bid was updated"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username, used a unique identifier for each user."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "User password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User password"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "description": "Specify whether the user is an administrator or not."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The creation date and time of the user"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the user was updated"
+          },
+          "autoBid": {
+            "$ref": "#/components/schemas/AutoBid"
+          },
+          "notifications": {
+            "$ref": "#/components/schemas/Notifications"
+          },
+          "bills": {
+            "$ref": "#/components/schemas/Bids"
+          }
+        }
+      },
+      "UserMiliseconds": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username, used a unique identifier for each user."
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "User password"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User password"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "description": "Specify whether the user is an administrator or not."
+          },
+          "created_at": {
+            "type": "number",
+            "description": "The creation date and time of the user in milliseconds."
+          },
+          "updated_at": {
+            "type": "number",
+            "description": "The date and time when the user was updated in milliseconds."
+          },
+          "autoBid": {
+            "$ref": "#/components/schemas/AutoBid"
+          },
+          "notifications": {
+            "$ref": "#/components/schemas/Notifications"
+          },
+          "bills": {
+            "$ref": "#/components/schemas/Bids"
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Item name, used a unique identifier for each item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Item description and extra details"
+          },
+          "image": {
+            "type": "string",
+            "description": "An Image url of the item"
+          },
+          "close_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "After this date and time users will not be able to bid on thie item anymore"
+          },
+          "created_by": {
+            "$ref": "#/components/schemas/User"
+          },
+          "highest_bid": {
+            "type": "number",
+            "description": "The highest bid on the item"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The creation date and time of the Item"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the Item was updated"
+          }
+        }
+      },
+      "ItemMiliseconds": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Item name, used a unique identifier for each item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Item description and extra details"
+          },
+          "image": {
+            "type": "string",
+            "description": "An Image url of the item"
+          },
+          "close_at": {
+            "type": "number",
+            "description": "After this date and time users will not be able to bid on thie item anymore (date is in milliseconds)"
+          },
+          "created_by": {
+            "$ref": "#/components/schemas/UserMiliseconds"
+          },
+          "highest_bid": {
+            "type": "number",
+            "description": "The highest bid on the item"
+          },
+          "created_at": {
+            "type": "number",
+            "description": "The creation date and time of the Item in milliseconds"
+          },
+          "updated_at": {
+            "type": "number",
+            "description": "The date and time when the Item was updated in milliseconds"
+          }
+        }
+      },
+      "Items": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ItemMiliseconds"
+        }
+      },
+      "ItemCreate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Item name, used a unique identifier for each item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Item description and extra details"
+          },
+          "image": {
+            "type": "string",
+            "description": "An Image url of the item"
+          },
+          "close_at": {
+            "type": "number",
+            "description": "After this date and time users will not be able to bid on thie item anymore (date is in milliseconds)"
+          }
+        }
+      },
+      "ItemUpdate": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Item name, used a unique identifier for each item."
+          },
+          "description": {
+            "type": "string",
+            "description": "Item description and extra details"
+          },
+          "image": {
+            "type": "string",
+            "description": "An Image url of the item"
+          },
+          "close_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "After this date and time users will not be able to bid on thie item anymore (date is in milliseconds)"
+          }
+        }
+      },
+      "AutoBid": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "description": "The amount left for auto bid"
+          },
+          "amountInitial": {
+            "type": "number",
+            "description": "The initial amount that was set by the user"
+          },
+          "percentage": {
+            "type": "number",
+            "description": "When the mount get to this percentage notify the user"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of item names that the user has actived auto bid on"
+          }
+        }
+      },
+      "Notifications": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Contains a list of notifications for the user in text format"
+      },
+      "Bids": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Bid"
+        }
+      },
+      "StateBids": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "integer",
+              "format": "int32",
+              "description": "The amount of the bid to be created."
+            },
+            "maxAmount": {
+              "type": "integer",
+              "format": "int32",
+              "description": "The maximum amount made by all the users in this item"
+            },
+            "state": {
+              "type": "string",
+              "enum": [
+                "Lost",
+                "Won",
+                "In Progress"
+              ]
+            },
+            "item": {
+              "$ref": "#/components/schemas/ItemMiliseconds"
+            },
+            "created_at": {
+              "type": "number",
+              "description": "The creation date and time of the bid in milliseconds"
+            },
+            "updated_at": {
+              "type": "number",
+              "description": "The date and time when the bid was updated milliseconds"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tryItOutEnabled": false
+}
