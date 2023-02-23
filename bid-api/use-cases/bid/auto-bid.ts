@@ -24,16 +24,15 @@ const makeAutoBid = ({
     return async function autoBid({ user, item, socket }: innerAutoBidArgs) {
         const users = await userRepository.list(0, 0, item, {});
         for (let _user of users) {
+            const _item = await itemRepository.get(item);
             if (_user.autoBid.amount <= 0 ) {
                 addNotification(_user, "Amount is not sufficient to continue auto bid")
-                sendEmail(_user.email, item)
+                sendEmail(_user.email, _item)
                 userRepository.update(_user.username, _user)
                 continue
             }
             if (_user.username !== user) {
-                const _item = await itemRepository.get(item);
                 const amount = _item.highest_bid;
-
                 let _bid = new Bid(amount + 1, _user, _item, Date.now(), Date.now());
                 const bidCreated: any = await bidRepository.create(_bid);
 
@@ -89,8 +88,9 @@ function addNotification(_user: User, notification: string) {
         _user.notifications = [notification];
 }
 
-function sendEmail(userEmail: string, itemName: string) {
-    const text = `Auto bid was actived for ${itemName}, but the amount is not sufficient to continue`
+async function sendEmail(userEmail: string, item:Item) {
+    const text = `Auto bid was actived for ${item.name}, but the amount is not sufficient to continue` + 
+                 `The item state is ${calculateItemState(item)}, the last bid on this item was ${item.highest_bid}$`
     const subject = "Not Enough Auto Bid Amount"
     emailUser({userEmail, subject, text})
 }
@@ -108,4 +108,11 @@ async function emailUsers(user: string, item: string, amount: number, userReposi
     const text = `An Auto bid was created on ${item} by another user, with the amount ${amount}$`
     const subject = "User Created New Auto Bid"
     emailUser({userEmail: usersEmails, subject, text})
+}
+
+function calculateItemState(item: Item) {
+    if (item.close_at <= Date.now()) {
+        return "Lost";
+    }
+    return "In Progress"
 }
