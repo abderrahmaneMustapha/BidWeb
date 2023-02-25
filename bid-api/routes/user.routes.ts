@@ -10,9 +10,6 @@ router.route('/auth').post(makeHttpCallback(controller.loginUser), () => {
      /*
         #swagger.summary = 'Login user'
         #swagger.tags = ['User']
-        #swagger.security = [{
-            "BasicAuth": []
-        }]
         #swagger.parameters['username'] = {
           in : 'body',
           required: true,
@@ -43,9 +40,6 @@ router.route('/register').post(makeHttpCallback(controller.registerUser), () => 
    /*
         #swagger.summary = 'Register a new user'
         #swagger.tags = ['User']
-        #swagger.security = [{
-            "BasicAuth": []
-        }]
         #swagger.parameters['username'] = {
           in : 'body',
           required: true,
